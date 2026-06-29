@@ -1,27 +1,62 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import OpportunityHero from "@/components/dashboard/OpportunityHero";
+import PolySignalInsight from "@/components/dashboard/PolySignalInsight";
+import ConvictionDistribution from "@/components/dashboard/ConvictionDistribution";
+import StatsBar from "@/components/dashboard/StatsBar";
+
+import type { DashboardResponse } from "@/types/dashboard";
+
 export default function Home() {
+  const [dashboard, setDashboard] =
+    useState<DashboardResponse | null>(null);
+
+  useEffect(() => {
+    fetch("/api/dashboard")
+      .then((res) => res.json())
+      .then((data: DashboardResponse) => setDashboard(data))
+      .catch(console.error);
+  }, []);
+
+  if (!dashboard) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-black text-white">
+        <div className="text-2xl font-semibold">
+          Loading PolySignal...
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="p-10">
-      <h1 className="text-4xl font-bold">
-        Polymarket Smart Money Tracker
-      </h1>
+    <main className="min-h-screen bg-black text-white p-8">
 
-      <div className="mt-8 border rounded-lg p-6">
-        <h2 className="text-2xl font-semibold">
-          Dashboard Status
-        </h2>
+      {/* Opportunity Hero */}
+      <OpportunityHero
+        opportunity={dashboard.featured}
+      />
 
-        <p className="mt-4">
-          Wallet tracking system coming online...
-        </p>
+      {/* Insight + Distribution */}
+      <div
+        className="grid gap-6 mt-8"
+        style={{
+          gridTemplateColumns: "2fr 1fr",
+        }}
+      >
+        <PolySignalInsight
+          opportunity={dashboard.featured}
+        />
 
-        <p className="mt-2">
-          Tracked Wallets: 0
-        </p>
-
-        <p className="mt-2">
-          Consensus Markets: 0
-        </p>
+        <ConvictionDistribution />
       </div>
+
+      {/* Stats */}
+      <div className="mt-8">
+        <StatsBar stats={dashboard.stats} />
+      </div>
+
     </main>
   );
 }
