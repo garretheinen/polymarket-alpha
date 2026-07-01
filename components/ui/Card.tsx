@@ -1,21 +1,27 @@
-import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
-interface CardProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props {
+  children: ReactNode;
+  className?: string;
+}
 
 export default function Card({
-  className,
-  ...props
-}: CardProps) {
+  children,
+  className = "",
+}: Props) {
   return (
     <div
-      className={cn(
-        "rounded-2xl border border-zinc-800 bg-zinc-900/80",
-        "transition-all duration-200",
-        "hover:border-zinc-700",
-        className
-      )}
-      {...props}
-    />
+      className={`
+        rounded-3xl
+        border
+        border-zinc-800
+        bg-zinc-900
+        p-8
+        shadow-lg
+        ${className}
+      `}
+    >
+      {children}
+    </div>
   );
 }
