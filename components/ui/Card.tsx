@@ -1,27 +1,22 @@
-import { ReactNode } from "react";
+import clsx from "clsx";
 
-interface Props {
-  children: ReactNode;
+interface CardProps {
+  children: React.ReactNode;
   className?: string;
 }
 
 export default function Card({
   children,
-  className = "",
-}: Props) {
+  className,
+}: CardProps) {
   return (
-    <div
-      className={`
-        rounded-3xl
-        border
-        border-zinc-800
-        bg-zinc-900
-        p-8
-        shadow-lg
-        ${className}
-      `}
+    <section
+      className={clsx(
+        "rounded-[28px] border border-slate-200 bg-white shadow-sm",
+        className
+      )}
     >
       {children}
-    </div>
+    </section>
   );
 }
