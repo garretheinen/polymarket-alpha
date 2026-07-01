@@ -1,51 +1,43 @@
 "use client";
 
-import { Search, Bell } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-slate-200 bg-white px-8">
+    <header className="flex h-[72px] items-center justify-between border-b border-slate-200 bg-white px-8">
       {/* Left */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           Dashboard
         </h1>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Real-time prediction market intelligence
-        </p>
+        <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+
+          <span>Live Prediction Intelligence</span>
+        </div>
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-3">
-        {/* Search */}
-        <button className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50">
-          <Search className="h-5 w-5 text-slate-500" />
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+          />
+
+          <input
+            placeholder="Search markets or traders..."
+            className="h-11 w-80 rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:bg-white"
+          />
+        </div>
+
+        <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 transition hover:bg-slate-100">
+          <Bell className="h-5 w-5 text-slate-600" />
         </button>
 
-        {/* Notifications */}
-        <button className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50">
-          <Bell className="h-5 w-5 text-slate-500" />
-
-          <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-emerald-500" />
-        </button>
-
-        {/* User */}
-        <button className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 transition hover:bg-slate-50">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-            G
-          </div>
-
-          <div className="hidden text-left xl:block">
-            <div className="text-sm font-medium text-slate-900">
-              Garret
-            </div>
-
-            <div className="text-xs text-slate-500">
-              Admin
-            </div>
-          </div>
-        </button>
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 font-semibold text-white">
+          G
+        </div>
       </div>
     </header>
   );

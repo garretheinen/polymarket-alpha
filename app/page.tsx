@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import OpportunityHero from "@/components/dashboard/OpportunityHero";
+import OpportunityHero from "@/components/dashboard/v2/OpportunityHero";
 import PolySignalInsight from "@/components/dashboard/PolySignalInsight";
 import ConvictionDistribution from "@/components/dashboard/ConvictionDistribution";
 import StatsBar from "@/components/dashboard/StatsBar";
@@ -22,7 +22,7 @@ export default function Home() {
 
   if (!dashboard) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-black text-white">
+      <main className="flex min-h-screen items-center justify-center bg-[#0B0D10] text-white">
         <div className="text-2xl font-semibold">
           Loading PolySignal...
         </div>
@@ -31,16 +31,13 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-
-      {/* Opportunity Hero */}
+    <main className="space-y-8">
       <OpportunityHero
         opportunity={dashboard.featured}
       />
 
-      {/* Insight + Distribution */}
       <div
-        className="grid gap-6 mt-8"
+        className="grid gap-6"
         style={{
           gridTemplateColumns: "2fr 1fr",
         }}
@@ -52,11 +49,7 @@ export default function Home() {
         <ConvictionDistribution />
       </div>
 
-      {/* Stats */}
-      <div className="mt-8">
-        <StatsBar stats={dashboard.stats} />
-      </div>
-
+      <StatsBar stats={dashboard.stats} />
     </main>
   );
 }
