@@ -1,102 +1,109 @@
-interface Opportunity {
-  market: string;
-  outcome: string;
-  capital: number;
-  wallets: number;
-  score: number;
-  confidence: string;
-}
+"use client";
 
-interface Props {
-  opportunity: Opportunity | null;
-}
+import {
+  BarChart3,
+  DollarSign,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 
-function formatMoney(value: number) {
-  if (value >= 1_000_000) {
-    return `$${(value / 1_000_000).toFixed(2)}M`;
-  }
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import Metric from "@/components/ui/Metric";
+import PolyScore from "@/components/ui/PolyScore";
+import ConsensusBadge from "@/components/ui/ConsensusBadge";
 
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(0)}K`;
-  }
-
-  return `$${value}`;
-}
-
-export default function OpportunityHero({
-  opportunity,
-}: Props) {
-  if (!opportunity) {
-    return (
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-        <h1 className="text-3xl font-bold text-white">
-          No featured opportunity
-        </h1>
-      </section>
-    );
-  }
-
+export default function OpportunityHero() {
   return (
-    <section className="rounded-3xl border border-emerald-500 bg-zinc-900 p-10">
+    <Card className="overflow-hidden">
+      <div className="p-10">
+        <div className="grid gap-12 lg:grid-cols-[1fr_320px] lg:items-start">
 
-      <div className="text-sm font-semibold uppercase tracking-wider text-emerald-400">
-        Highest Conviction Today
+          {/* LEFT */}
+
+          <div>
+            <div className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-600">
+              Today's Top Signal
+            </div>
+
+            <h1 className="mt-4 text-5xl font-bold tracking-tight text-slate-900">
+              Spain -2.5
+            </h1>
+
+            <p className="mt-3 text-base font-medium text-slate-500">
+              Sports • Spain vs Brazil
+            </p>
+
+            <ConsensusBadge
+              wallets={3}
+              className="mt-6"
+            />
+
+            <div className="mt-10 max-w-3xl">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Analyst Summary
+              </h2>
+
+              <p className="mt-4 text-lg leading-8 text-slate-700">
+                Elite wallets have steadily increased exposure over the
+                past 48 hours while maintaining unusually high capital
+                concentration. Historical positioning patterns and
+                trader alignment suggest above-average confidence
+                heading into this event, with no significant reduction
+                in conviction across leading participants.
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+
+          <PolyScore
+            grade="A+"
+            score={97}
+            percentile={2}
+            className="h-full"
+          />
+        </div>
       </div>
 
-      <h1 className="mt-4 text-5xl font-bold text-white">
-        {opportunity.market}
-      </h1>
+      <div className="border-t border-slate-200" />
 
-      <p className="mt-3 text-xl text-zinc-300">
-        Position: <strong>{opportunity.outcome}</strong>
-      </p>
+      {/* FOOTER */}
 
-      <div className="mt-10 grid grid-cols-4 gap-6">
+      <div className="flex flex-col gap-8 p-8 xl:flex-row xl:items-center xl:justify-between">
 
-        <Metric
-          label="Capital"
-          value={formatMoney(opportunity.capital)}
-        />
+        <div className="grid flex-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
 
-        <Metric
-          label="Wallets"
-          value={String(opportunity.wallets)}
-        />
+          <Metric
+            label="ROI"
+            value="+18.4%"
+            icon={<TrendingUp size={20} />}
+          />
 
-        <Metric
-          label="Score"
-          value={String(opportunity.score)}
-        />
+          <Metric
+            label="Accuracy"
+            value="91.2%"
+            icon={<Target size={20} />}
+          />
 
-        <Metric
-          label="Confidence"
-          value={opportunity.confidence}
-        />
+          <Metric
+            label="Signal Strength"
+            value="92"
+            icon={<BarChart3 size={20} />}
+          />
 
+          <Metric
+            label="Capital"
+            value="$5.17M"
+            icon={<DollarSign size={20} />}
+          />
+
+        </div>
+
+        <Button className="w-full xl:w-auto">
+          View Full Analysis
+        </Button>
       </div>
-
-    </section>
-  );
-}
-
-function Metric({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl bg-zinc-800 p-5">
-
-      <div className="text-sm text-zinc-400">
-        {label}
-      </div>
-
-      <div className="mt-2 text-3xl font-bold text-white">
-        {value}
-      </div>
-
-    </div>
+    </Card>
   );
 }

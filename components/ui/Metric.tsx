@@ -25,7 +25,7 @@ export default function Metric({
       </div>
 
       <div>
-        <div className="text-3xl font-bold tracking-tight text-slate-900">
+        <div className="text-2xl font-bold tracking-tight text-slate-900">
           {value}
         </div>
 

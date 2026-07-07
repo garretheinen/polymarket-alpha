@@ -16,14 +16,18 @@ export default function ConvictionDistribution({
   const total = strong + moderate + weak;
 
   return (
-    <section className="rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+    <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div>
+        <h3 className="text-lg font-semibold text-slate-900">
+          Conviction Distribution
+        </h3>
 
-      <div className="text-sm font-semibold uppercase tracking-wider text-emerald-400">
-        Conviction Distribution
+        <p className="mt-1 text-sm text-slate-500">
+          Distribution of tracked opportunities by conviction strength.
+        </p>
       </div>
 
       <div className="mt-8 space-y-6">
-
         <Bar
           label="Strong"
           value={strong}
@@ -44,9 +48,7 @@ export default function ConvictionDistribution({
           total={total}
           color="#ef4444"
         />
-
       </div>
-
     </section>
   );
 }
@@ -62,20 +64,29 @@ function Bar({
   total: number;
   color: string;
 }) {
+  const percent = Math.round((value / total) * 100);
+
   return (
-    <div>
-      <div className="mb-2 flex justify-between text-white">
-        <span>{label}</span>
-        <span>{value}</span>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-slate-600">
+          {label}
+        </span>
+
+        <span className="text-sm font-semibold text-slate-900">
+          {value}{" "}
+          <span className="text-slate-500">
+            ({percent}%)
+          </span>
+        </span>
       </div>
 
-      <div className="h-3 rounded-full bg-zinc-800">
+      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
         <div
+          className="h-full rounded-full transition-all duration-500"
           style={{
-            width: `${(value / total) * 100}%`,
-            background: color,
-            height: "100%",
-            borderRadius: 999,
+            width: `${percent}%`,
+            backgroundColor: color,
           }}
         />
       </div>

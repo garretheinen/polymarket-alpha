@@ -15,27 +15,22 @@ export default function ConsensusBadge({
   return (
     <div
       className={clsx(
-        "inline-flex flex-col rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4",
+        "inline-flex items-center gap-3 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2",
         className
       )}
     >
-      <div className="flex items-center gap-2">
-        <ShieldCheck
-          className="h-5 w-5 text-emerald-600"
-          strokeWidth={2.25}
-        />
+      <ShieldCheck
+        className="h-4 w-4 text-emerald-600"
+        strokeWidth={2.25}
+      />
 
-        <span className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">
-          Elite Consensus
-        </span>
-      </div>
+      <span className="text-sm font-semibold text-emerald-700">
+        Elite Consensus
+      </span>
 
-      <p className="mt-2 text-sm text-emerald-700/80">
-        Verified by{" "}
-        <span className="font-semibold">
-          {wallets} Elite Wallets
-        </span>
-      </p>
+      <span className="text-sm text-emerald-600">
+        {wallets} wallets
+      </span>
     </div>
   );
 }

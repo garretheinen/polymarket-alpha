@@ -1,0 +1,65 @@
+"use client";
+
+import clsx from "clsx";
+
+interface CompassNodeProps {
+  name: string;
+  grade: string;
+  signals: number;
+  active?: boolean;
+  className?: string;
+  onClick?: () => void;
+}
+
+export default function CompassNode({
+  name,
+  grade,
+  signals,
+  active = false,
+  className,
+  onClick,
+}: CompassNodeProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={clsx(
+        "group flex w-32 flex-col items-center rounded-3xl p-3 transition-all duration-300",
+        className
+      )}
+    >
+      {/* Orb */}
+
+      <div
+        className={clsx(
+          "relative flex h-16 w-16 items-center justify-center rounded-full border bg-white shadow-sm transition-all duration-300",
+          active
+            ? "scale-110 border-blue-500 shadow-lg ring-4 ring-blue-100"
+            : "border-slate-200 group-hover:scale-105 group-hover:border-blue-300"
+        )}
+      >
+        {/* Active Glow */}
+
+        {active && (
+          <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl" />
+        )}
+
+        <span className="relative text-xl font-black tracking-tight text-emerald-600">
+          {grade}
+        </span>
+      </div>
+
+      {/* Name */}
+
+      <h3 className="mt-4 text-sm font-semibold tracking-tight text-slate-900">
+        {name}
+      </h3>
+
+      {/* Signals */}
+
+      <p className="mt-1 text-xs font-medium text-slate-500">
+        {signals} Signals
+      </p>
+    </button>
+  );
+}

@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 
 import OpportunityHero from "@/components/dashboard/v2/OpportunityHero";
-import PolySignalInsight from "@/components/dashboard/PolySignalInsight";
-import ConvictionDistribution from "@/components/dashboard/ConvictionDistribution";
-import StatsBar from "@/components/dashboard/StatsBar";
+import SignalCompass from "@/components/dashboard/v2/SignalCompass";
 
 import type { DashboardResponse } from "@/types/dashboard";
 
@@ -31,25 +29,48 @@ export default function Home() {
   }
 
   return (
-    <main className="space-y-8">
+    <main className="flex w-full flex-col gap-8">
+
+      {/* Opportunity Overview */}
       <OpportunityHero
         opportunity={dashboard.featured}
       />
 
-      <div
-        className="grid gap-6"
-        style={{
-          gridTemplateColumns: "2fr 1fr",
-        }}
-      >
-        <PolySignalInsight
-          opportunity={dashboard.featured}
-        />
+      {/* Signal Compass */}
+      <SignalCompass />
 
-        <ConvictionDistribution />
-      </div>
+      {/* Sprint 1 Roadmap */}
 
-      <StatsBar stats={dashboard.stats} />
+      <section className="rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+        <h2 className="text-2xl font-bold text-slate-900">
+          PolySignal Insight
+        </h2>
+
+        <p className="mt-2 text-slate-500">
+          Coming next...
+        </p>
+      </section>
+
+      <section className="rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+        <h2 className="text-2xl font-bold text-slate-900">
+          Market Pulse
+        </h2>
+
+        <p className="mt-2 text-slate-500">
+          Coming in Sprint 1...
+        </p>
+      </section>
+
+      <section className="rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+        <h2 className="text-2xl font-bold text-slate-900">
+          Top Opportunities
+        </h2>
+
+        <p className="mt-2 text-slate-500">
+          Coming in Sprint 1...
+        </p>
+      </section>
+
     </main>
   );
 }

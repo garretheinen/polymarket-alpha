@@ -18,7 +18,7 @@ export default function PolyScore({
   return (
     <div
       className={clsx(
-        "flex flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white px-10 py-8 shadow-sm",
+        "flex flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white px-10 py-8 shadow-sm transition-all duration-200",
         className
       )}
     >
@@ -30,12 +30,12 @@ export default function PolyScore({
         PolyScore™
       </p>
 
-      <div className="mt-6 text-5xl font-bold text-slate-900">
+      <div className="mt-5 text-5xl font-bold tracking-tight text-slate-900">
         {score}
       </div>
 
       <p className="mt-2 text-sm text-slate-500">
-        Top {percentile}% Today
+        Top {percentile}% of Signals
       </p>
     </div>
   );
