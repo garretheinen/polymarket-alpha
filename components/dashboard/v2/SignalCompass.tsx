@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-
+import IntelligenceNetwork from "./IntelligenceNetwork";
 import Card from "@/components/ui/Card";
 
 import CenterLogo from "./CenterLogo";
@@ -74,10 +74,10 @@ export default function SignalCompass() {
 
           {/* SVG Layer */}
 
-          <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
-            preserveAspectRatio="none"
-          />
+          <IntelligenceNetwork
+  selectedId={selected.id}
+  className="pointer-events-none absolute inset-0 h-full w-full"
+/>
 
           {/* Center Engine */}
 

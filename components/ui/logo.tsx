@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-type LogoSize = "sm" | "md" | "lg";
+type LogoSize = "sm" | "md" | "lg" | "xl";
 
 interface LogoProps {
   size?: LogoSize;
@@ -15,17 +15,26 @@ const sizes = {
     title: "text-lg",
     subtitle: "text-[10px]",
   },
+
   md: {
     box: "h-11 w-11",
     icon: 22,
     title: "text-xl",
     subtitle: "text-xs",
   },
+
   lg: {
     box: "h-14 w-14",
     icon: 28,
     title: "text-2xl",
     subtitle: "text-sm",
+  },
+
+  xl: {
+    box: "h-16 w-16",
+    icon: 34,
+    title: "text-3xl",
+    subtitle: "text-base",
   },
 };
 
@@ -38,7 +47,10 @@ export default function Logo({
 
   return (
     <div
-      className={clsx("flex items-center gap-4", className)}
+      className={clsx(
+        "flex items-center gap-4",
+        className
+      )}
     >
       <div
         className={clsx(

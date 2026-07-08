@@ -33,7 +33,7 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden h-screen w-[272px] shrink-0 flex-col border-r border-slate-200 bg-[#FCFCFD] lg:flex">
-      {/* Logo */}
+      <div className="text-xl font-bold">PolySignal</div>
       <div className="border-b border-slate-200 px-8 py-7">
         <Logo />
       </div>

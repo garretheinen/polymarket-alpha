@@ -1,43 +1,43 @@
 export const signalCompassPositions = {
   politics: {
-    top: "3%",
+    top: "2%",
     left: "50%",
     transform: "translateX(-50%)",
   },
 
   sports: {
-    top: "26%",
-    right: "3%",
+    top: "22%",
+    right: "4%",
   },
 
   crypto: {
-    bottom: "22%",
-    right: "14%",
+    bottom: "24%",
+    right: "12%",
   },
 
   weather: {
-    bottom: "10%",
-    right: "34%",
+    bottom: "6%",
+    right: "30%",
   },
 
   entertainment: {
-    bottom: "2%",
+    bottom: "0%",
     left: "50%",
     transform: "translateX(-50%)",
   },
 
   macro: {
-    bottom: "10%",
-    left: "34%",
+    bottom: "6%",
+    left: "30%",
   },
 
   ai: {
-    bottom: "22%",
-    left: "14%",
+    bottom: "24%",
+    left: "12%",
   },
 
   economy: {
-    top: "26%",
-    left: "3%",
+    top: "22%",
+    left: "4%",
   },
 } as const;
