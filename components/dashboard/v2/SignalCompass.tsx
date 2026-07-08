@@ -14,7 +14,7 @@ import {
   SignalCompassCategory,
 } from "./signalCompassData";
 
-import { signalCompassPositions } from "./signalCompassPositions";
+import { signalCompassLayout } from "./signalCompassLayout";
 
 export default function SignalCompass() {
   const [selectedId, setSelectedId] = useState("sports");
@@ -89,7 +89,7 @@ export default function SignalCompass() {
             <div
               key={category.id}
               className="absolute"
-              style={signalCompassPositions[category.id]}
+              style={signalCompassLayout[category.id].node}
             >
               <CompassNode
                 name={category.name}
