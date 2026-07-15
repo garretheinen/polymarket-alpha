@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import clsx from "clsx";
 
 interface CompassNodeProps {
@@ -11,55 +12,65 @@ interface CompassNodeProps {
   onClick?: () => void;
 }
 
-export default function CompassNode({
-  name,
-  grade,
-  signals,
-  active = false,
-  className,
-  onClick,
-}: CompassNodeProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={clsx(
-        "group flex w-36 flex-col items-center rounded-3xl p-3 transition-all duration-500",
-        className
-      )}
-    >
-      {/* Orb */}
-
-      <div
+const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
+  (
+    {
+      name,
+      grade,
+      signals,
+      active = false,
+      className,
+      onClick,
+    },
+    ref
+  ) => {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        onClick={onClick}
         className={clsx(
-          "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white shadow-sm transition-all duration-300",
-            active
-  ? "scale-105 border-blue-500 shadow-md ring-2 ring-blue-200 ring-offset-4 ring-offset-white"
-            : "border-slate-200 group-hover:scale-105 group-hover:border-blue-300"
+          "group flex w-36 flex-col items-center rounded-3xl p-3 transition-all duration-500",
+          className
         )}
       >
-        {/* Active Glow */}
+        {/* Orb */}
 
-        {active && (
-        <div className="absolute inset-0 rounded-full bg-blue-500/5 blur-2xl scale-125" />
-        )}
+        <div
+          className={clsx(
+            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white shadow-sm transition-all duration-300",
+            active
+              ? "scale-105 border-blue-500 shadow-md ring-2 ring-blue-200 ring-offset-4 ring-offset-white"
+              : "border-slate-200 group-hover:scale-105 group-hover:border-blue-300"
+          )}
+        >
+          {/* Active Glow */}
 
-        <span className="relative text-xl font-black tracking-tight text-emerald-600">
-          {grade}
-        </span>
-      </div>
+          {active && (
+            <div className="absolute inset-0 scale-125 rounded-full bg-blue-500/5 blur-2xl" />
+          )}
 
-      {/* Name */}
+          <span className="relative text-xl font-black tracking-tight text-emerald-600">
+            {grade}
+          </span>
+        </div>
 
-      <h3 className="mt-4 text-sm font-semibold tracking-tight text-slate-900">
-        {name}
-      </h3>
+        {/* Name */}
 
-      {/* Signals */}
+        <h3 className="mt-4 text-sm font-semibold tracking-tight text-slate-900">
+          {name}
+        </h3>
 
-      <p className="mt-1 text-xs font-medium text-slate-500">
-        {signals} Signals
-      </p>
-    </button>
-  );
-}
+        {/* Signals */}
+
+        <p className="mt-1 text-xs font-medium text-slate-500">
+          {signals} Signals
+        </p>
+      </button>
+    );
+  }
+);
+
+CompassNode.displayName = "CompassNode";
+
+export default CompassNode;

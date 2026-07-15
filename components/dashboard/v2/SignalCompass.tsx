@@ -14,7 +14,7 @@ import {
   SignalCompassCategory,
 } from "./signalCompassData";
 
-import { signalCompassLayout } from "./signalCompassLayout";
+import { signalCompassPositions } from "./signalCompassPositions";
 
 export default function SignalCompass() {
   const [selectedId, setSelectedId] = useState("sports");
@@ -29,13 +29,10 @@ export default function SignalCompass() {
 
   return (
     <Card className="overflow-hidden p-10">
-
       {/* Header */}
 
       <div className="mb-14 flex items-start justify-between">
-
         <div className="max-w-3xl">
-
           <p className="text-sm font-bold uppercase tracking-[0.28em] text-blue-600">
             Signal Compass
           </p>
@@ -51,33 +48,27 @@ export default function SignalCompass() {
             markets to surface where institutional-sized
             conviction is forming before it becomes obvious.
           </p>
-
         </div>
 
         <div className="rounded-full bg-emerald-50 px-5 py-3">
-
           <span className="text-sm font-semibold text-emerald-700">
             ● Live Intelligence
           </span>
-
         </div>
-
       </div>
 
       {/* Dashboard Layout */}
 
       <div className="grid items-start gap-12 lg:grid-cols-[70%_30%]">
-
         {/* Compass */}
 
         <div className="relative flex min-h-[780px] items-center justify-center overflow-hidden rounded-[36px]">
-
           {/* SVG Layer */}
 
           <IntelligenceNetwork
-  selectedId={selected.id}
-  className="pointer-events-none absolute inset-0 h-full w-full"
-/>
+            selectedId={selected.id}
+            className="pointer-events-none absolute inset-0 h-full w-full"
+          />
 
           {/* Center Engine */}
 
@@ -89,60 +80,53 @@ export default function SignalCompass() {
             <div
               key={category.id}
               className="absolute"
-              style={signalCompassLayout[category.id].node}
+              style={signalCompassPositions[category.id]}
             >
               <CompassNode
                 name={category.name}
                 grade={category.grade}
                 signals={category.signals}
                 active={selected.id === category.id}
-                onClick={() =>
-                  setSelectedId(category.id)
-                }
+                onClick={() => setSelectedId(category.id)}
               />
             </div>
           ))}
-
         </div>
 
         {/* Intelligence Panel */}
 
         <AnimatePresence mode="wait">
-
-         <motion.div
-  key={selected.id}
-  initial={{
-    opacity: 0,
-    x: 12,
-  }}
-  animate={{
-    opacity: 1,
-    x: 0,
-  }}
-  exit={{
-    opacity: 0,
-    x: -12,
-  }}
-  transition={{
-    duration: 0.2,
-  }}
->
-  <SelectedCategory
-    name={selected.name}
-    status={selected.status}
-    summary={selected.summary}
-    grade={selected.grade}
-    strength={selected.strength}
-    signals={selected.signals}
-    capital={selected.capital}
-    topOpportunity={selected.topOpportunity}
-  />
-</motion.div>
-
+          <motion.div
+            key={selected.id}
+            initial={{
+              opacity: 0,
+              x: 12,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            exit={{
+              opacity: 0,
+              x: -12,
+            }}
+            transition={{
+              duration: 0.2,
+            }}
+          >
+            <SelectedCategory
+              name={selected.name}
+              status={selected.status}
+              summary={selected.summary}
+              grade={selected.grade}
+              strength={selected.strength}
+              signals={selected.signals}
+              capital={selected.capital}
+              topOpportunity={selected.topOpportunity}
+            />
+          </motion.div>
         </AnimatePresence>
-
       </div>
-
     </Card>
   );
 }
