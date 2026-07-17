@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import IntelligenceNetwork from "./IntelligenceNetwork";
+
 import Card from "@/components/ui/Card";
 
 import IntelligenceCore from "./IntelligenceCore";
+import IntelligenceNetwork from "./IntelligenceNetwork";
 import CompassNode from "./CompassNode";
+import PreviewBanner from "./PreviewBanner";
 import SelectedCategory from "./SelectedCategory";
 
 import {
@@ -16,8 +18,24 @@ import {
 
 import { signalCompassPositions } from "./signalCompassPositions";
 
+import { getSignalCompassState } from "./signalCompassState";
+
 export default function SignalCompass() {
+  //
+  // Selected (clicked)
+  //
+
   const [selectedId, setSelectedId] = useState("sports");
+
+  //
+  // Observed (hovered)
+  //
+
+  const [observedId, setObservedId] = useState<string | null>(null);
+
+  //
+  // Selected Category
+  //
 
   const selected = useMemo<SignalCompassCategory>(() => {
     return (
@@ -26,6 +44,29 @@ export default function SignalCompass() {
       ) ?? signalCompassData[0]
     );
   }, [selectedId]);
+
+  //
+  // Observed Category
+  //
+
+  const observed = useMemo<SignalCompassCategory | null>(() => {
+    if (!observedId) return null;
+
+    return (
+      signalCompassData.find(
+        (category) => category.id === observedId
+      ) ?? null
+    );
+  }, [observedId]);
+
+  //
+  // Interaction State
+  //
+
+  const interactionState = getSignalCompassState({
+    observed: observedId !== null,
+    focused: selectedId !== null,
+  });
 
   return (
     <Card className="overflow-hidden p-10">
@@ -44,9 +85,9 @@ export default function SignalCompass() {
           </h2>
 
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-            PolySignal continuously analyzes prediction
-            markets to surface where institutional-sized
-            conviction is forming before it becomes obvious.
+            PolySignal continuously analyzes prediction markets
+            to surface where institutional-sized conviction is
+            forming before it becomes obvious.
           </p>
         </div>
 
@@ -57,24 +98,28 @@ export default function SignalCompass() {
         </div>
       </div>
 
-      {/* Dashboard Layout */}
+      {/* Dashboard */}
 
       <div className="grid items-start gap-12 lg:grid-cols-[70%_30%]">
         {/* Compass */}
 
         <div className="relative flex min-h-[780px] items-center justify-center overflow-hidden rounded-[36px]">
-          {/* SVG Layer */}
+          {/* Network */}
 
           <IntelligenceNetwork
             selectedId={selected.id}
+            observedId={observedId}
             className="pointer-events-none absolute inset-0 h-full w-full"
           />
 
-          {/* Center Engine */}
+          {/* Beacon */}
 
-          <IntelligenceCore />
+          <IntelligenceCore
+            interactionState={interactionState}
+            observedId={observedId}
+          />
 
-          {/* Compass Nodes */}
+          {/* Nodes */}
 
           {signalCompassData.map((category) => (
             <div
@@ -87,45 +132,60 @@ export default function SignalCompass() {
                 grade={category.grade}
                 signals={category.signals}
                 active={selected.id === category.id}
-                onClick={() => setSelectedId(category.id)}
+                observed={observedId === category.id}
+                onMouseEnter={() =>
+                  setObservedId(category.id)
+                }
+                onMouseLeave={() =>
+                  setObservedId(null)
+                }
+                onClick={() =>
+                  setSelectedId(category.id)
+                }
               />
             </div>
           ))}
         </div>
 
-        {/* Intelligence Panel */}
+        {/* Right Panel */}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selected.id}
-            initial={{
-              opacity: 0,
-              x: 12,
-            }}
-            animate={{
-              opacity: 1,
-              x: 0,
-            }}
-            exit={{
-              opacity: 0,
-              x: -12,
-            }}
-            transition={{
-              duration: 0.2,
-            }}
-          >
-            <SelectedCategory
-              name={selected.name}
-              status={selected.status}
-              summary={selected.summary}
-              grade={selected.grade}
-              strength={selected.strength}
-              signals={selected.signals}
-              capital={selected.capital}
-              topOpportunity={selected.topOpportunity}
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="flex flex-col">
+          <PreviewBanner
+            observedName={observed?.name}
+          />
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selected.id}
+              initial={{
+                opacity: 0,
+                x: 10,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              exit={{
+                opacity: 0,
+                x: -10,
+              }}
+              transition={{
+                duration: 0.2,
+              }}
+            >
+              <SelectedCategory
+                name={selected.name}
+                status={selected.status}
+                summary={selected.summary}
+                grade={selected.grade}
+                strength={selected.strength}
+                signals={selected.signals}
+                capital={selected.capital}
+                topOpportunity={selected.topOpportunity}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </Card>
   );

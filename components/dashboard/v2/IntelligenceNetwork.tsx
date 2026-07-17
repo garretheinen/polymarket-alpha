@@ -9,7 +9,11 @@ import {
 
 interface IntelligenceNetworkProps {
   className?: string;
+
   selectedId: SignalCompassNodeId;
+
+  // NEW
+  observedId?: string | null;
 }
 
 const logoAnchors = {
@@ -26,17 +30,29 @@ function percent(value?: string) {
 export default function IntelligenceNetwork({
   className,
   selectedId,
+  observedId,
 }: IntelligenceNetworkProps) {
   const id = useId();
 
-  const layout = signalCompassLayout[selectedId];
+  //
+  // Observed temporarily overrides selected
+  //
+
+  const targetId =
+    (observedId as SignalCompassNodeId | null) ?? selectedId;
+
+  const observed = observedId !== null;
+
+  const layout = signalCompassLayout[targetId];
 
   const start = logoAnchors[layout.network.logoAnchor];
 
   let targetX = 500;
   let targetY = 500;
 
-  // Determine node position from layout
+  //
+  // Determine node position
+  //
 
   if ("left" in layout.node && layout.node.left) {
     targetX = percent(layout.node.left)! * 10;
@@ -54,7 +70,9 @@ export default function IntelligenceNetwork({
     targetY = 1000 - percent(layout.node.bottom)! * 10;
   }
 
-  // Move endpoint onto the edge of the node
+  //
+  // Move endpoint to edge of node
+  //
 
   switch (layout.network.entrySide) {
     case "left":
@@ -75,19 +93,13 @@ export default function IntelligenceNetwork({
   }
 
   //
-  // Routed Path
+  // Routed path
   //
 
   let d = "";
 
   switch (layout.network.logoAnchor) {
     case "top":
-      d = `
-        M ${start.x} ${start.y}
-        L ${start.x} ${targetY}
-      `;
-      break;
-
     case "bottom":
       d = `
         M ${start.x} ${start.y}
@@ -96,12 +108,6 @@ export default function IntelligenceNetwork({
       break;
 
     case "left":
-      d = `
-        M ${start.x} ${start.y}
-        L ${targetX} ${start.y}
-      `;
-      break;
-
     case "right":
       d = `
         M ${start.x} ${start.y}
@@ -131,12 +137,12 @@ export default function IntelligenceNetwork({
           y2={targetY}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.10" />
-          <stop offset="45%" stopColor="#2563EB" stopOpacity="0.04" />
+          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.08" />
+          <stop offset="45%" stopColor="#2563EB" stopOpacity="0.035" />
           <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
         </linearGradient>
 
-        {/* Active Flow */}
+        {/* Active / Observed Flow */}
 
         <linearGradient
           id={activeGradient}
@@ -146,10 +152,29 @@ export default function IntelligenceNetwork({
           y2={targetY}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.55" />
-          <stop offset="20%" stopColor="#3B82F6" stopOpacity="0.35" />
-          <stop offset="60%" stopColor="#60A5FA" stopOpacity="0.14" />
-          <stop offset="100%" stopColor="#60A5FA" stopOpacity="0" />
+          <stop
+            offset="0%"
+            stopColor="#2563EB"
+            stopOpacity={observed ? "0.75" : "0.55"}
+          />
+
+          <stop
+            offset="20%"
+            stopColor="#3B82F6"
+            stopOpacity={observed ? "0.50" : "0.35"}
+          />
+
+          <stop
+            offset="60%"
+            stopColor="#60A5FA"
+            stopOpacity={observed ? "0.22" : "0.14"}
+          />
+
+          <stop
+            offset="100%"
+            stopColor="#60A5FA"
+            stopOpacity="0"
+          />
         </linearGradient>
 
         {/* Glow */}
@@ -161,7 +186,10 @@ export default function IntelligenceNetwork({
           width="300%"
           height="300%"
         >
-          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feGaussianBlur
+            stdDeviation={observed ? "3.2" : "2.5"}
+            result="blur"
+          />
 
           <feMerge>
             <feMergeNode in="blur" />
@@ -180,15 +208,19 @@ export default function IntelligenceNetwork({
         strokeLinecap="round"
       />
 
-      {/* Active Intelligence */}
+      {/* Intelligence Flow */}
 
       <path
         d={d}
         fill="none"
         stroke={`url(#${activeGradient})`}
-        strokeWidth="2.25"
+        strokeWidth={observed ? "2.8" : "2.25"}
         strokeLinecap="round"
         filter={`url(#${flowGlow})`}
+        style={{
+          transition:
+            "stroke-width 250ms ease, filter 250ms ease",
+        }}
       />
     </svg>
   );

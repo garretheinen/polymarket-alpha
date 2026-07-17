@@ -7,9 +7,15 @@ interface CompassNodeProps {
   name: string;
   grade: string;
   signals: number;
+
   active?: boolean;
+  observed?: boolean;
+
   className?: string;
+
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
@@ -18,9 +24,15 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
       name,
       grade,
       signals,
+
       active = false,
+      observed = false,
+
       className,
+
       onClick,
+      onMouseEnter,
+      onMouseLeave,
     },
     ref
   ) => {
@@ -29,8 +41,10 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
         ref={ref}
         type="button"
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         className={clsx(
-          "group flex w-36 flex-col items-center rounded-3xl p-3 transition-all duration-500",
+          "flex w-36 flex-col items-center rounded-3xl p-3 transition-all duration-300 ease-out cursor-pointer",
           className
         )}
       >
@@ -38,10 +52,15 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
 
         <div
           className={clsx(
-            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white shadow-sm transition-all duration-300",
+            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white transition-all duration-300 ease-out",
+
             active
-              ? "scale-105 border-blue-500 shadow-md ring-2 ring-blue-200 ring-offset-4 ring-offset-white"
-              : "border-slate-200 group-hover:scale-105 group-hover:border-blue-300"
+              ? "scale-105 border-blue-500 shadow-lg ring-2 ring-blue-200 ring-offset-4 ring-offset-white"
+
+              : observed
+              ? "scale-[1.02] border-blue-300 shadow-md"
+
+              : "border-slate-200 shadow-sm"
           )}
         >
           {/* Active Glow */}
@@ -50,20 +69,52 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
             <div className="absolute inset-0 scale-125 rounded-full bg-blue-500/5 blur-2xl" />
           )}
 
-          <span className="relative text-xl font-black tracking-tight text-emerald-600">
+          {/* Grade */}
+
+          <span
+            className={clsx(
+              "relative text-xl font-black tracking-tight transition-all duration-300",
+
+              active
+                ? "text-emerald-500"
+
+                : observed
+                ? "text-emerald-500"
+
+                : "text-emerald-600"
+            )}
+          >
             {grade}
           </span>
         </div>
 
         {/* Name */}
 
-        <h3 className="mt-4 text-sm font-semibold tracking-tight text-slate-900">
+        <h3
+          className={clsx(
+            "mt-4 text-sm font-semibold tracking-tight transition-colors duration-300",
+
+            active || observed
+              ? "text-slate-950"
+
+              : "text-slate-900"
+          )}
+        >
           {name}
         </h3>
 
         {/* Signals */}
 
-        <p className="mt-1 text-xs font-medium text-slate-500">
+        <p
+          className={clsx(
+            "mt-1 text-xs font-medium transition-colors duration-300",
+
+            active || observed
+              ? "text-slate-600"
+
+              : "text-slate-500"
+          )}
+        >
           {signals} Signals
         </p>
       </button>
