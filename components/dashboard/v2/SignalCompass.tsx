@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import IntelligenceNetwork from "./IntelligenceNetwork";
 import Card from "@/components/ui/Card";
 
-import CenterLogo from "./CenterLogo";
+import IntelligenceCore from "./IntelligenceCore";
 import CompassNode from "./CompassNode";
 import SelectedCategory from "./SelectedCategory";
 
@@ -72,7 +72,7 @@ export default function SignalCompass() {
 
           {/* Center Engine */}
 
-          <CenterLogo active />
+          <IntelligenceCore />
 
           {/* Compass Nodes */}
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useId } from "react";
+
 import {
   signalCompassLayout,
   SignalCompassNodeId,
@@ -25,6 +27,8 @@ export default function IntelligenceNetwork({
   className,
   selectedId,
 }: IntelligenceNetworkProps) {
+  const id = useId();
+
   const layout = signalCompassLayout[selectedId];
 
   const start = logoAnchors[layout.network.logoAnchor];
@@ -33,6 +37,7 @@ export default function IntelligenceNetwork({
   let targetY = 500;
 
   // Determine node position from layout
+
   if ("left" in layout.node && layout.node.left) {
     targetX = percent(layout.node.left)! * 10;
   }
@@ -49,7 +54,8 @@ export default function IntelligenceNetwork({
     targetY = 1000 - percent(layout.node.bottom)! * 10;
   }
 
-  // Move the endpoint onto the edge of the node
+  // Move endpoint onto the edge of the node
+
   switch (layout.network.entrySide) {
     case "left":
       targetX -= 35;
@@ -69,7 +75,7 @@ export default function IntelligenceNetwork({
   }
 
   //
-  // V3 ROUTED PATHS
+  // Routed Path
   //
 
   let d = "";
@@ -104,19 +110,85 @@ export default function IntelligenceNetwork({
       break;
   }
 
+  const networkGradient = `${id}-network`;
+  const activeGradient = `${id}-active`;
+  const flowGlow = `${id}-glow`;
+
   return (
     <svg
       className={className}
       viewBox="0 0 1000 1000"
       preserveAspectRatio="none"
     >
+      <defs>
+        {/* Base Network */}
+
+        <linearGradient
+          id={networkGradient}
+          x1={start.x}
+          y1={start.y}
+          x2={targetX}
+          y2={targetY}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.10" />
+          <stop offset="45%" stopColor="#2563EB" stopOpacity="0.04" />
+          <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Active Flow */}
+
+        <linearGradient
+          id={activeGradient}
+          x1={start.x}
+          y1={start.y}
+          x2={targetX}
+          y2={targetY}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.55" />
+          <stop offset="20%" stopColor="#3B82F6" stopOpacity="0.35" />
+          <stop offset="60%" stopColor="#60A5FA" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#60A5FA" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Glow */}
+
+        <filter
+          id={flowGlow}
+          x="-100%"
+          y="-100%"
+          width="300%"
+          height="300%"
+        >
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Base Network */}
+
       <path
         d={d}
         fill="none"
-        stroke="#2563EB"
+        stroke={`url(#${networkGradient})`}
         strokeWidth="1.5"
         strokeLinecap="round"
-        opacity=".10"
+      />
+
+      {/* Active Intelligence */}
+
+      <path
+        d={d}
+        fill="none"
+        stroke={`url(#${activeGradient})`}
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        filter={`url(#${flowGlow})`}
       />
     </svg>
   );

@@ -16,33 +16,44 @@ const CenterLogo = forwardRef<HTMLDivElement, CenterLogoProps>(
       <div
         ref={ref}
         className={clsx(
-          "relative -translate-y-12 flex h-48 w-48 items-center justify-center",
+          "relative -translate-y-10 flex h-56 w-56 items-center justify-center",
           className
         )}
       >
-        {/* Organic Glow */}
+        {/* Ambient Intelligence Glow */}
 
         <div
-        className={clsx(
-  "absolute h-64 w-80 rounded-full bg-blue-500/8 blur-[80px] transition-all duration-700 ease-in-out",
-  active && "scale-110 bg-blue-500/12"
-)}  
-        
+          className={clsx(
+            "absolute h-72 w-96 rounded-full bg-blue-500/8 blur-[88px] transition-all duration-700 ease-in-out",
+            active && "scale-110 bg-blue-500/12"
+          )}
         />
 
-        {/* Future Pulse Ring */}
+        {/* Intelligence Field */}
 
-        {/* Intentionally empty.
-            Ring only appears when
-            a category is selected. */}
+        <div className="absolute h-60 w-60 rounded-full bg-white/40 blur-3xl" />
 
-        {/* PolySignal Intelligence Engine */}
+        {/* Intelligence Engine Housing */}
 
-        <Logo
-  size="xl"
-  iconOnly
-  className="relative z-10 scale-110 transition-transform duration-500"
-/>
+        <div
+          className={clsx(
+            "relative z-10 flex h-36 w-36 items-center justify-center rounded-[34px]",
+            "border border-slate-200/80",
+            "bg-white",
+            "shadow-[0_18px_40px_rgba(15,23,42,.10)]",
+            "ring-1 ring-white/70"
+          )}
+          style={{
+            boxShadow:
+              "0 18px 40px rgba(15,23,42,.10), inset 0 1px 2px rgba(255,255,255,.75), inset 0 -3px 6px rgba(15,23,42,.04)",
+          }}
+        >
+          <Logo
+            size="xl"
+            iconOnly
+            className="relative z-20 scale-125 transition-transform duration-500"
+          />
+        </div>
       </div>
     );
   }
