@@ -6,6 +6,7 @@ import Logo from "@/components/ui/logo";
 
 import {
   SignalCompassNodeId,
+  signalCompassLayout,
 } from "./signalCompassLayout";
 
 import {
@@ -22,9 +23,7 @@ import {
 
 interface IntelligenceCoreProps {
   className?: string;
-
   interactionState: SignalCompassState;
-
   observedId?: string | null;
 }
 
@@ -33,12 +32,18 @@ export default function IntelligenceCore({
   interactionState,
   observedId,
 }: IntelligenceCoreProps) {
-  const direction = getCompassDirection(
-    observedId as SignalCompassNodeId | null
-  );
+  const validObservedId =
+    observedId &&
+    Object.prototype.hasOwnProperty.call(
+      signalCompassLayout,
+      observedId
+    )
+      ? (observedId as SignalCompassNodeId)
+      : null;
 
-  const resonance =
-    getBeaconResonance(interactionState);
+  const direction = getCompassDirection(validObservedId);
+
+  const resonance = getBeaconResonance(interactionState);
 
   return (
     <div
@@ -50,16 +55,7 @@ export default function IntelligenceCore({
       {/* Ambient Atmosphere */}
 
       <div
-        className="
-          absolute
-          h-[300px]
-          w-[300px]
-          rounded-full
-          blur-[95px]
-          transition-all
-          duration-500
-          ease-out
-        "
+        className="absolute h-[300px] w-[300px] rounded-full blur-[95px] transition-all duration-500 ease-out"
         style={{
           transform: `
             translate(
@@ -68,7 +64,6 @@ export default function IntelligenceCore({
             )
             scale(${resonance.atmosphereScale})
           `,
-
           background:
             "radial-gradient(circle, rgba(37,99,235,.08) 0%, rgba(37,99,235,.03) 55%, transparent 100%)",
         }}
@@ -77,25 +72,15 @@ export default function IntelligenceCore({
       {/* Outer Halo */}
 
       <div
-        className="
-          absolute
-          h-[220px]
-          w-[220px]
-          rounded-full
-          blur-[55px]
-          transition-all
-          duration-500
-          ease-out
-        "
+        className="absolute h-[220px] w-[220px] rounded-full blur-[55px] transition-all duration-500 ease-out"
         style={{
           transform: `
             translate(
-              ${direction.haloOffset.x * .55}px,
-              ${direction.haloOffset.y * .55}px
+              ${direction.haloOffset.x * 0.55}px,
+              ${direction.haloOffset.y * 0.55}px
             )
             scale(${resonance.haloScale})
           `,
-
           background:
             "radial-gradient(circle, rgba(59,130,246,.08) 0%, rgba(59,130,246,.02) 75%, transparent 100%)",
         }}
@@ -104,16 +89,7 @@ export default function IntelligenceCore({
       {/* Inner Halo */}
 
       <div
-        className="
-          absolute
-          h-[180px]
-          w-[180px]
-          rounded-full
-          blur-[24px]
-          transition-all
-          duration-500
-          ease-out
-        "
+        className="absolute h-[180px] w-[180px] rounded-full blur-[24px] transition-all duration-500 ease-out"
         style={{
           transform: `
             translate(
@@ -122,7 +98,6 @@ export default function IntelligenceCore({
             )
             scale(${resonance.haloScale})
           `,
-
           background:
             "radial-gradient(circle, rgba(96,165,250,.18) 0%, rgba(96,165,250,.04) 70%, transparent 100%)",
         }}
@@ -131,34 +106,9 @@ export default function IntelligenceCore({
       {/* Beacon Frame */}
 
       <div
-        className="
-          relative
-          z-20
-          flex
-          h-[108px]
-          w-[108px]
-          items-center
-          justify-center
-
-          rounded-[26px]
-
-          border-[2px]
-
-          border-slate-100
-
-          bg-white/[0.05]
-
-          backdrop-blur-sm
-
-          transition-all
-          duration-500
-          ease-out
-        "
+        className="relative z-20 flex h-[108px] w-[108px] items-center justify-center rounded-[26px] border-2 border-slate-100 bg-white/[0.05] backdrop-blur-sm transition-all duration-500 ease-out"
         style={{
-          transform: `
-            scale(${resonance.coreScale})
-          `,
-
+          transform: `scale(${resonance.coreScale})`,
           boxShadow: `
             0 10px 24px rgba(15,23,42,.045),
             0 0 ${28 * resonance.glowOpacity}px rgba(37,99,235,.08),
@@ -170,47 +120,21 @@ export default function IntelligenceCore({
         {/* Blue Intelligence Core */}
 
         <div
-          className="
-            relative
-
-            flex
-
-            h-[100px]
-            w-[100px]
-
-            items-center
-            justify-center
-
-            rounded-[20px]
-
-            transition-all
-            duration-500
-            ease-out
-          "
+          className="relative flex h-[100px] w-[100px] items-center justify-center rounded-[20px] transition-all duration-500 ease-out"
           style={{
             background:
               "linear-gradient(180deg,#3B82F6 0%, #2563EB 55%, #1D4ED8 100%)",
-
             boxShadow: `
               0 12px 30px rgba(37,99,235,.20),
               inset 0 2px 2px rgba(255,255,255,.12),
               inset 0 -3px 6px rgba(0,0,0,.08)
             `,
           }}
-        ></div>
-                  {/* Directional Energy */}
+        >
+          {/* Directional Energy */}
 
           <div
-            className="
-              absolute
-              inset-0
-
-              rounded-[20px]
-
-              transition-all
-              duration-500
-              ease-out
-            "
+            className="absolute inset-0 rounded-[20px] transition-all duration-500 ease-out"
             style={{
               background: `
                 radial-gradient(
@@ -218,7 +142,6 @@ export default function IntelligenceCore({
                   rgba(255,255,255,${0.18 * resonance.glowOpacity}),
                   transparent 36%
                 ),
-
                 radial-gradient(
                   circle at 50% 50%,
                   rgba(255,255,255,.035),
@@ -240,14 +163,18 @@ export default function IntelligenceCore({
 
           {/* Logo */}
 
-          <Logo
-            iconOnly
-            size="md"
-            className="relative z-20 text-white transition-all duration-500 ease-out"
+          <div
+            className="relative z-20 transition-all duration-500 ease-out"
             style={{
               transform: `scale(${resonance.coreScale})`,
             }}
-          />
+          >
+            <Logo
+              iconOnly
+              size="md"
+              className="text-white"
+            />
+          </div>
         </div>
       </div>
     </div>

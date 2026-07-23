@@ -128,21 +128,17 @@ export default function SignalCompass() {
               style={signalCompassPositions[category.id]}
             >
               <CompassNode
-                name={category.name}
-                grade={category.grade}
-                signals={category.signals}
-                active={selected.id === category.id}
-                observed={observedId === category.id}
-                onMouseEnter={() =>
-                  setObservedId(category.id)
-                }
-                onMouseLeave={() =>
-                  setObservedId(null)
-                }
-                onClick={() =>
-                  setSelectedId(category.id)
-                }
-              />
+  name={category.name}
+  grade={category.grade}
+  signals={category.signals}
+  interactionState={getSignalCompassState({
+    observed: observedId === category.id,
+    focused: selected.id === category.id,
+  })}
+  onMouseEnter={() => setObservedId(category.id)}
+  onMouseLeave={() => setObservedId(null)}
+  onClick={() => setSelectedId(category.id)}
+/>
             </div>
           ))}
         </div>

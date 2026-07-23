@@ -8,6 +8,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "top",
       entrySide: "bottom",
+      svg: {
+        x: 500,
+        y: 170,
+      },
     },
   },
 
@@ -19,6 +23,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "right",
       entrySide: "left",
+      svg: {
+        x: 810,
+        y: 355,
+      },
     },
   },
 
@@ -30,6 +38,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "right",
       entrySide: "left",
+      svg: {
+        x: 720,
+        y: 690,
+      },
     },
   },
 
@@ -41,6 +53,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "bottom",
       entrySide: "top",
+      svg: {
+        x: 610,
+        y: 835,
+      },
     },
   },
 
@@ -53,6 +69,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "bottom",
       entrySide: "top",
+      svg: {
+        x: 500,
+        y: 885,
+      },
     },
   },
 
@@ -64,6 +84,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "bottom",
       entrySide: "top",
+      svg: {
+        x: 390,
+        y: 835,
+      },
     },
   },
 
@@ -75,6 +99,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "left",
       entrySide: "right",
+      svg: {
+        x: 280,
+        y: 690,
+      },
     },
   },
 
@@ -86,6 +114,10 @@ export const signalCompassLayout = {
     network: {
       logoAnchor: "left",
       entrySide: "right",
+      svg: {
+        x: 190,
+        y: 355,
+      },
     },
   },
 } as const;

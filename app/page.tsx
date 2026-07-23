@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import OpportunityHero from "@/components/dashboard/v2/OpportunityHero";
+import OpportunityHero from "@/components/dashboard/v2/OpportunityHero/index";
+console.log(OpportunityHero);
 import SignalCompass from "@/components/dashboard/v2/SignalCompass";
 
 import type { DashboardResponse } from "@/types/dashboard";
@@ -17,7 +18,7 @@ export default function Home() {
       .then((data: DashboardResponse) => setDashboard(data))
       .catch(console.error);
   }, []);
-
+console.log(dashboard);
   if (!dashboard) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#0B0D10] text-white">
@@ -33,8 +34,8 @@ export default function Home() {
 
       {/* Opportunity Overview */}
       <OpportunityHero
-        opportunity={dashboard.featured}
-      />
+  opportunity={dashboard.featured}
+/>
 
       {/* Signal Compass */}
       <SignalCompass />

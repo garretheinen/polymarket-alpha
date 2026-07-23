@@ -242,10 +242,29 @@ const consensus = Array.from(
 // FEATURED OPPORTUNITY
 // =========================
 
-const featured =
+const topTrade =
   consensus.find((trade) => trade.featured) ??
   consensus[0] ??
   null;
+
+const featured = topTrade
+  ? {
+      title: `${topTrade.market}: ${topTrade.outcome}`,
+      category: topTrade.market,
+
+      intelligence: {
+        narrative:
+          "Elite traders are showing exceptional alignment with unusually strong conviction. Capital concentration continues increasing, indicating sustained confidence rather than short-term momentum.",
+      },
+
+      conviction: {
+        polyScore: "A+",
+        consensus: 91,
+        trackedCapital: topTrade.capital,
+        supportingSignals: topTrade.wallets,
+      },
+    }
+  : null;
 
 return NextResponse.json({
   stats: {

@@ -27,39 +27,45 @@ export interface CompassDirection {
   };
 }
 
+const DEFAULT_DIRECTION: CompassDirection = {
+  vector: {
+    x: 0,
+    y: 0,
+  },
+
+  angle: 0,
+
+  glowOrigin: {
+    x: 50,
+    y: 35,
+  },
+
+  haloOffset: {
+    x: 0,
+    y: 0,
+  },
+};
+
 export function getCompassDirection(
   id?: SignalCompassNodeId | null
 ): CompassDirection {
-  //
-  // Default (centered)
-  //
-
+  // No active node
   if (!id) {
-    return {
-      vector: {
-        x: 0,
-        y: 0,
-      },
+    return DEFAULT_DIRECTION;
+  }
 
-      angle: 0,
+  // Invalid node (defensive guard)
+  const node = signalCompassLayout[id];
 
-      glowOrigin: {
-        x: 50,
-        y: 35,
-      },
-
-      haloOffset: {
-        x: 0,
-        y: 0,
-      },
-    };
+  if (!node) {
+    return DEFAULT_DIRECTION;
   }
 
   const {
     network: {
       svg: { x, y },
     },
-  } = signalCompassLayout[id];
+  } = node;
 
   //
   // Direction vector
