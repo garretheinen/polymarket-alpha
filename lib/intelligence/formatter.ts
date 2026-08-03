@@ -1,52 +1,32 @@
 import type { Opportunity } from "@/lib/domain/opportunity";
 import type { IntelligenceBrief } from "./briefing";
 
-export function createIntelligenceBrief(
+
+  export function createIntelligenceBrief(
   opportunity: Opportunity
 ): IntelligenceBrief {
   return {
-    // Opportunity
+    title: "TEST",
 
-    title: opportunity.title,
+    metadata: [
+      {
+        icon: "🔥",
+        label: "IF YOU SEE THIS THE NEW FORMATTER IS RUNNING",
+      },
+    ],
 
-    category: opportunity.category,
+    polyScore: "A+",
 
-    matchup: "Spain vs Brazil",
+    headline: "TEST",
 
-    resolution: "Resolves Today",
+    summary: "TEST",
 
-    // PolyScore
-
-    polyScore: opportunity.conviction.polyScore,
-
-    // Executive Conclusion
-
-    headline: "Exceptional Conviction",
-
-    summary:
-      "PolySignal has identified an unusually strong convergence of elite trader conviction.",
-
-    // Conviction Explanation
-    // Placeholder until the Intelligence Engine generates this.
-
-    explanation:
-      "Three elite traders independently increased exposure during the latest snapshot while capital concentration continued strengthening. No significant opposing positions were detected, reinforcing the conviction assessment.",
-
-    // Dynamic Evidence
-    // Placeholder until the Dynamic Evidence Engine is built.
+    explanation: "TEST",
 
     evidence: [
       {
-        label: "Consensus",
-        value: `${opportunity.conviction.consensus}%`,
-      },
-      {
-        label: "Tracked Capital",
-        value: `$${opportunity.conviction.trackedCapital.toLocaleString()}`,
-      },
-      {
-        label: "Historical Performance",
-        value: "92%",
+        label: "TEST",
+        value: "123",
       },
     ],
   };
