@@ -10,61 +10,41 @@ export default function IntelligenceSummary({
   briefing,
 }: IntelligenceSummaryProps) {
   return (
-    <section className="mt-12">
-      <div className="grid items-start gap-10 lg:grid-cols-[250px_1fr]">
-        {/* PolyScore */}
+    <section className="mt-10">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="text-base leading-7 text-slate-600">
+          {briefing.summary}
+        </p>
 
-        <div className="rounded-3xl bg-blue-600 px-10 py-7 text-center shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-blue-100">
-            PolyScore™
-          </p>
-
-          <div className="mt-4 text-8xl font-black tracking-tight text-white">
-            {briefing.polyScore}
-          </div>
-        </div>
-
-        {/* Narrative */}
-
-        <div>
-          <div className="inline-flex items-center gap-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100">
-              <span className="text-base font-semibold text-emerald-600">
-                ✦
-              </span>
-            </div>
-
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-700">
-              Elite Consensus
-            </p>
-          </div>
-
-          <h2 className="mt-4 text-4xl font-bold tracking-tight text-slate-950">
-            {briefing.headline}
-          </h2>
-
-          <p className="mt-5 max-w-2xl text-xl leading-8 text-slate-600">
-            {briefing.summary}
-          </p>
-
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-500">
-            {briefing.explanation}
-          </p>
-        </div>
+        <p className="mt-4 text-base leading-7 text-slate-500">
+          {briefing.explanation}
+        </p>
       </div>
 
-      {/* Evidence */}
+      <div className="mt-10 flex flex-col items-center">
+        <div className="flex h-36 w-36 flex-col items-center justify-center rounded-2xl bg-blue-600 shadow-sm">
+          <div className="text-[68px] font-black leading-none tracking-tight text-white">
+            {briefing.polyScore}
+          </div>
 
-      <div className="mt-10 border-t border-slate-200 pt-6">
-        <div className="grid gap-8 md:grid-cols-3">
-          {briefing.evidence.map((item) => (
-            <EvidenceMetric
-              key={item.label}
-              label={item.label}
-              value={item.value}
-            />
-          ))}
+          <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-100">
+            PolyScore™
+          </div>
         </div>
+
+        <p className="mt-4 text-xl font-bold tracking-tight text-slate-950">
+          {briefing.verdict}
+        </p>
+      </div>
+
+      <div className="mt-12 grid gap-8 sm:grid-cols-3">
+        {briefing.evidence.map((item) => (
+          <EvidenceMetric
+            key={item.label}
+            label={item.label}
+            value={item.value}
+          />
+        ))}
       </div>
     </section>
   );
@@ -80,14 +60,14 @@ function EvidenceMetric({
   value,
 }: EvidenceMetricProps) {
   return (
-    <div className="text-center">
-      <p className="text-xs font-semibold tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-2 text-[2.6rem] font-bold tracking-tight text-slate-950">
+    <div className="flex flex-col items-center justify-center text-center">
+      <div className="text-[44px] font-bold leading-none tracking-tight text-slate-950">
         {value}
-      </p>
+      </div>
+
+      <div className="mt-2 text-sm font-semibold text-slate-500">
+        {label}
+      </div>
     </div>
   );
 }
