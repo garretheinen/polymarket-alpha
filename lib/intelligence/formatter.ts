@@ -1,23 +1,33 @@
 import type { Opportunity } from "@/lib/domain/opportunity";
 import type { IntelligenceBrief } from "./briefing";
 
+function formatOpportunityTitle(title: string): string {
+  const spreadMatch = title.match(
+    /^Spread:\s*(.+?)\s*\(([+-]?\d+(?:\.\d+)?)\):\s*(.+)$/i
+  );
+
+  if (spreadMatch) {
+    const [, team, spread] = spreadMatch;
+
+    return `${team} ${spread}`;
+  }
+
+  return title;
+}
+
 export function createIntelligenceBrief(
   opportunity: Opportunity
 ): IntelligenceBrief {
   return {
-    // Brand
-
     masthead: "POLYSIGNAL INTELLIGENCE",
 
     sectionTitle: "TODAY'S TOP OPPORTUNITY",
 
-    // Opportunity
-
-    title: opportunity.title,
+    title: formatOpportunityTitle(opportunity.title),
 
     metadata: [
       {
-        label: opportunity.category,
+        label: "World Cup",
       },
       {
         label: "Spain vs Brazil",
@@ -27,21 +37,15 @@ export function createIntelligenceBrief(
       },
     ],
 
-    // Executive Brief
-
     summary:
       "Elite conviction continues strengthening as institutional capital remains concentrated ahead of market resolution.",
 
     explanation:
       "Three top wallets increased exposure with minimal opposing activity. Comparable conviction profiles have historically produced a 92% win rate.",
 
-    // Verdict
-
     polyScore: opportunity.conviction.polyScore,
 
     verdict: "Exceptional Conviction",
-
-    // Evidence
 
     evidence: [
       {

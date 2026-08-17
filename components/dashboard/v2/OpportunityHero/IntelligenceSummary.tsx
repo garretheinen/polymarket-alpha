@@ -10,20 +10,20 @@ export default function IntelligenceSummary({
   briefing,
 }: IntelligenceSummaryProps) {
   return (
-    <section className="mt-10">
+    <section className="mt-9">
       <div className="mx-auto max-w-2xl text-center">
         <p className="text-base leading-7 text-slate-600">
           {briefing.summary}
         </p>
 
-        <p className="mt-4 text-base leading-7 text-slate-500">
+        <p className="mt-3 text-base leading-7 text-slate-500">
           {briefing.explanation}
         </p>
       </div>
 
-      <div className="mt-10 flex flex-col items-center">
-        <div className="flex h-36 w-36 flex-col items-center justify-center rounded-2xl bg-blue-600 shadow-sm">
-          <div className="text-[68px] font-black leading-none tracking-tight text-white">
+      <div className="mt-8 flex flex-col items-center">
+        <div className="flex h-[152px] w-[152px] flex-col items-center justify-center rounded-2xl bg-blue-600 shadow-sm">
+          <div className="text-[72px] font-black leading-none tracking-tight text-white">
             {briefing.polyScore}
           </div>
 
@@ -32,12 +32,12 @@ export default function IntelligenceSummary({
           </div>
         </div>
 
-        <p className="mt-4 text-xl font-bold tracking-tight text-slate-950">
+        <p className="mt-4 text-lg font-bold tracking-tight text-slate-950 sm:text-xl">
           {briefing.verdict}
         </p>
       </div>
 
-      <div className="mt-12 grid gap-8 sm:grid-cols-3">
+      <div className="mt-7 grid gap-8 sm:grid-cols-3">
         {briefing.evidence.map((item) => (
           <EvidenceMetric
             key={item.label}
@@ -65,7 +65,7 @@ function EvidenceMetric({
         {value}
       </div>
 
-      <div className="mt-2 text-sm font-semibold text-slate-500">
+      <div className="mt-2 text-xs font-medium text-slate-500">
         {label}
       </div>
     </div>
