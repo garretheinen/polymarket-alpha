@@ -21,7 +21,7 @@ export default function Home() {
 console.log(dashboard);
   if (!dashboard) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0B0D10] text-white">
+      <main className="flex min-h-screen items-center justify-center bg-white text-slate-900">
         <div className="text-2xl font-semibold">
           Loading PolySignal...
         </div>

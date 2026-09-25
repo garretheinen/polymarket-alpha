@@ -7,7 +7,7 @@ export default function Shell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen bg-[#0B0D10] text-white">
+    <div className="flex h-screen bg-white text-slate-900">
       <Sidebar />
 
       <div className="flex flex-1 flex-col overflow-hidden">

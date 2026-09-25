@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#0B0D10] text-white">
+      <body className="bg-white text-slate-900">
         <Shell>{children}</Shell>
       </body>
     </html>
