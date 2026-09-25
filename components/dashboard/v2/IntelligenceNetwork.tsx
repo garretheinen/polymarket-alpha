@@ -1,227 +1,404 @@
 "use client";
 
-import { useId } from "react";
-
 import {
-  signalCompassLayout,
-  SignalCompassNodeId,
-} from "./signalCompassLayout";
+  useLayoutEffect,
+  useState,
+  type RefObject,
+} from "react";
 
 interface IntelligenceNetworkProps {
   className?: string;
 
-  selectedId: SignalCompassNodeId;
+  containerRef: RefObject<HTMLDivElement | null>;
+  coreRef: RefObject<HTMLDivElement | null>;
 
-  // NEW
-  observedId?: string | null;
+  getTargetElement: () => HTMLDivElement | null;
+
+  targetId: string;
+
+  observed: boolean;
 }
 
-const logoAnchors = {
-  top: { x: 500, y: 465 },
-  right: { x: 535, y: 500 },
-  bottom: { x: 500, y: 535 },
-  left: { x: 465, y: 500 },
-} as const;
+interface Point {
+  x: number;
+  y: number;
+}
 
-function percent(value?: string) {
-  return value ? Number.parseFloat(value) : undefined;
+interface Geometry {
+  start: Point;
+  length: number;
+  angle: number;
+}
+
+const NODE_EDGE_GAP = 6;
+const CORE_OVERLAP = 6;
+
+function getCenter(
+  rect: DOMRect,
+  containerRect: DOMRect
+): Point {
+  return {
+    x:
+      rect.left -
+      containerRect.left +
+      rect.width / 2,
+
+    y:
+      rect.top -
+      containerRect.top +
+      rect.height / 2,
+  };
+}
+
+function getRectangleEdgePoint(
+  rect: DOMRect,
+  containerRect: DOMRect,
+  toward: Point
+): Point {
+  const center = getCenter(
+    rect,
+    containerRect
+  );
+
+  const dx = toward.x - center.x;
+  const dy = toward.y - center.y;
+
+  if (dx === 0 && dy === 0) {
+    return center;
+  }
+
+  const halfWidth = rect.width / 2;
+  const halfHeight = rect.height / 2;
+
+  const scaleX =
+    dx === 0
+      ? Number.POSITIVE_INFINITY
+      : halfWidth / Math.abs(dx);
+
+  const scaleY =
+    dy === 0
+      ? Number.POSITIVE_INFINITY
+      : halfHeight / Math.abs(dy);
+
+  const scale = Math.min(
+    scaleX,
+    scaleY
+  );
+
+  return {
+    x: center.x + dx * scale,
+    y: center.y + dy * scale,
+  };
+}
+
+function getCircleEdgePoint(
+  rect: DOMRect,
+  containerRect: DOMRect,
+  from: Point
+): Point {
+  const center = getCenter(
+    rect,
+    containerRect
+  );
+
+  const dx = center.x - from.x;
+  const dy = center.y - from.y;
+
+  const length =
+    Math.sqrt(
+      dx * dx + dy * dy
+    ) || 1;
+
+  const nx = dx / length;
+  const ny = dy / length;
+
+  const radius =
+    Math.min(
+      rect.width,
+      rect.height
+    ) / 2;
+
+  return {
+    x:
+      center.x -
+      nx * (radius + NODE_EDGE_GAP),
+
+    y:
+      center.y -
+      ny * (radius + NODE_EDGE_GAP),
+  };
 }
 
 export default function IntelligenceNetwork({
   className,
-  selectedId,
-  observedId,
+  containerRef,
+  coreRef,
+  getTargetElement,
+  targetId,
+  observed,
 }: IntelligenceNetworkProps) {
-  const id = useId();
+  const [geometry, setGeometry] =
+    useState<Geometry | null>(null);
 
-  //
-  // Observed temporarily overrides selected
-  //
+  useLayoutEffect(() => {
+    let frameId = 0;
 
-  const targetId =
-    (observedId as SignalCompassNodeId | null) ?? selectedId;
+    let resizeObserver:
+      | ResizeObserver
+      | null = null;
 
-  const observed = observedId !== null;
+    let cancelled = false;
 
-  const layout = signalCompassLayout[targetId];
+    const measure = () => {
+      if (cancelled) {
+        return;
+      }
 
-  const start = logoAnchors[layout.network.logoAnchor];
+      const container =
+        containerRef.current;
 
-  let targetX = 500;
-  let targetY = 500;
+      const core =
+        coreRef.current;
 
-  //
-  // Determine node position
-  //
+      const target =
+        getTargetElement();
 
-  if ("left" in layout.node && layout.node.left) {
-    targetX = percent(layout.node.left)! * 10;
-  }
+      if (
+        !container ||
+        !core ||
+        !target
+      ) {
+        frameId =
+          requestAnimationFrame(
+            measure
+          );
 
-  if ("right" in layout.node && layout.node.right) {
-    targetX = 1000 - percent(layout.node.right)! * 10;
-  }
+        return;
+      }
 
-  if ("top" in layout.node && layout.node.top) {
-    targetY = percent(layout.node.top)! * 10;
-  }
+      const containerRect =
+        container.getBoundingClientRect();
 
-  if ("bottom" in layout.node && layout.node.bottom) {
-    targetY = 1000 - percent(layout.node.bottom)! * 10;
-  }
+      const coreRect =
+        core.getBoundingClientRect();
 
-  //
-  // Move endpoint to edge of node
-  //
+      const targetRect =
+        target.getBoundingClientRect();
 
-  switch (layout.network.entrySide) {
-    case "left":
-      targetX -= 35;
-      break;
+      const coreCenter =
+        getCenter(
+          coreRect,
+          containerRect
+        );
 
-    case "right":
-      targetX += 35;
-      break;
+      const targetCenter =
+        getCenter(
+          targetRect,
+          containerRect
+        );
 
-    case "top":
-      targetY -= 35;
-      break;
+      const edgeStart =
+        getRectangleEdgePoint(
+          coreRect,
+          containerRect,
+          targetCenter
+        );
 
-    case "bottom":
-      targetY += 35;
-      break;
-  }
+      const startVectorX =
+        edgeStart.x -
+        coreCenter.x;
 
-  //
-  // Routed path
-  //
+      const startVectorY =
+        edgeStart.y -
+        coreCenter.y;
 
-  let d = "";
+      const startVectorLength =
+        Math.sqrt(
+          startVectorX *
+            startVectorX +
+            startVectorY *
+              startVectorY
+        ) || 1;
 
-  switch (layout.network.logoAnchor) {
-    case "top":
-    case "bottom":
-      d = `
-        M ${start.x} ${start.y}
-        L ${start.x} ${targetY}
-      `;
-      break;
+      const start = {
+        x:
+          edgeStart.x -
+          (startVectorX /
+            startVectorLength) *
+            CORE_OVERLAP,
 
-    case "left":
-    case "right":
-      d = `
-        M ${start.x} ${start.y}
-        L ${targetX} ${start.y}
-      `;
-      break;
-  }
+        y:
+          edgeStart.y -
+          (startVectorY /
+            startVectorLength) *
+            CORE_OVERLAP,
+      };
 
-  const networkGradient = `${id}-network`;
-  const activeGradient = `${id}-active`;
-  const flowGlow = `${id}-glow`;
+      const end =
+        getCircleEdgePoint(
+          targetRect,
+          containerRect,
+          coreCenter
+        );
+
+      const dx =
+        end.x - start.x;
+
+      const dy =
+        end.y - start.y;
+
+      const length =
+        Math.sqrt(
+          dx * dx + dy * dy
+        );
+
+      const angle =
+        Math.atan2(
+          dy,
+          dx
+        ) *
+        (180 / Math.PI);
+
+      setGeometry({
+        start,
+        length,
+        angle,
+      });
+
+      if (!resizeObserver) {
+        resizeObserver =
+          new ResizeObserver(() => {
+            frameId =
+              requestAnimationFrame(
+                measure
+              );
+          });
+
+        resizeObserver.observe(
+          container
+        );
+
+        resizeObserver.observe(
+          core
+        );
+
+        resizeObserver.observe(
+          target
+        );
+      }
+    };
+
+    frameId =
+      requestAnimationFrame(
+        measure
+      );
+
+    const handleResize = () => {
+      cancelAnimationFrame(
+        frameId
+      );
+
+      frameId =
+        requestAnimationFrame(
+          measure
+        );
+    };
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    return () => {
+      cancelled = true;
+
+      cancelAnimationFrame(
+        frameId
+      );
+
+      resizeObserver?.disconnect();
+
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+    };
+  }, [
+    containerRef,
+    coreRef,
+    getTargetElement,
+    targetId,
+  ]);
 
   return (
-    <svg
+    <div
       className={className}
-      viewBox="0 0 1000 1000"
-      preserveAspectRatio="none"
+      aria-hidden="true"
     >
-      <defs>
-        {/* Base Network */}
+      {geometry && (
+        <>
+          {/* Atmospheric trail */}
 
-        <linearGradient
-          id={networkGradient}
-          x1={start.x}
-          y1={start.y}
-          x2={targetX}
-          y2={targetY}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0%" stopColor="#2563EB" stopOpacity="0.08" />
-          <stop offset="45%" stopColor="#2563EB" stopOpacity="0.035" />
-          <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
-        </linearGradient>
+          <div
+            className="absolute h-[7px] rounded-full bg-blue-300/20 blur-[4px]"
+            style={{
+              left:
+                geometry.start.x,
 
-        {/* Active / Observed Flow */}
+              top:
+                geometry.start.y,
 
-        <linearGradient
-          id={activeGradient}
-          x1={start.x}
-          y1={start.y}
-          x2={targetX}
-          y2={targetY}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop
-            offset="0%"
-            stopColor="#2563EB"
-            stopOpacity={observed ? "0.75" : "0.55"}
+              width:
+                geometry.length,
+
+              transformOrigin:
+                "0 50%",
+
+              transform: `
+                translateY(-50%)
+                rotate(${geometry.angle}deg)
+              `,
+            }}
           />
 
-          <stop
-            offset="20%"
-            stopColor="#3B82F6"
-            stopOpacity={observed ? "0.50" : "0.35"}
+          {/* Intelligence ray */}
+
+          <div
+            className="absolute h-[3px] rounded-full"
+            style={{
+              left:
+                geometry.start.x,
+
+              top:
+                geometry.start.y,
+
+              width:
+                geometry.length,
+
+              transformOrigin:
+                "0 50%",
+
+              transform: `
+                translateY(-50%)
+                rotate(${geometry.angle}deg)
+              `,
+
+              background:
+                observed
+                  ? "linear-gradient(90deg, rgba(37,99,235,.92) 0%, rgba(59,130,246,.72) 42%, rgba(147,197,253,.38) 100%)"
+                  : "linear-gradient(90deg, rgba(37,99,235,.78) 0%, rgba(59,130,246,.56) 42%, rgba(147,197,253,.28) 100%)",
+
+              boxShadow:
+                observed
+                  ? "0 0 12px rgba(59,130,246,.24)"
+                  : "0 0 8px rgba(59,130,246,.16)",
+
+              transition:
+                "opacity 180ms ease",
+            }}
           />
-
-          <stop
-            offset="60%"
-            stopColor="#60A5FA"
-            stopOpacity={observed ? "0.22" : "0.14"}
-          />
-
-          <stop
-            offset="100%"
-            stopColor="#60A5FA"
-            stopOpacity="0"
-          />
-        </linearGradient>
-
-        {/* Glow */}
-
-        <filter
-          id={flowGlow}
-          x="-100%"
-          y="-100%"
-          width="300%"
-          height="300%"
-        >
-          <feGaussianBlur
-            stdDeviation={observed ? "3.2" : "2.5"}
-            result="blur"
-          />
-
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      {/* Base Network */}
-
-      <path
-        d={d}
-        fill="none"
-        stroke={`url(#${networkGradient})`}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-
-      {/* Intelligence Flow */}
-
-      <path
-        d={d}
-        fill="none"
-        stroke={`url(#${activeGradient})`}
-        strokeWidth={observed ? "2.8" : "2.25"}
-        strokeLinecap="round"
-        filter={`url(#${flowGlow})`}
-        style={{
-          transition:
-            "stroke-width 250ms ease, filter 250ms ease",
-        }}
-      />
-    </svg>
+        </>
+      )}
+    </div>
   );
 }

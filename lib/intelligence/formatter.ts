@@ -1,4 +1,4 @@
-import type { Opportunity } from "@/lib/domain/opportunity";
+import type { DashboardFeaturedOpportunity } from "@/types/dashboard";
 import type { IntelligenceBrief } from "./briefing";
 
 function formatOpportunityTitle(title: string): string {
@@ -16,7 +16,7 @@ function formatOpportunityTitle(title: string): string {
 }
 
 export function createIntelligenceBrief(
-  opportunity: Opportunity
+  opportunity: Pick<DashboardFeaturedOpportunity, "title" | "conviction">
 ): IntelligenceBrief {
   return {
     masthead: "POLYSIGNAL INTELLIGENCE",

@@ -1,7 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
 
 import Card from "@/components/ui/Card";
 
@@ -13,175 +22,294 @@ import SelectedCategory from "./SelectedCategory";
 
 import {
   signalCompassData,
-  SignalCompassCategory,
+  type SignalCompassCategory,
 } from "./signalCompassData";
+
+import type { SignalCompassNodeId } from "./signalCompassLayout";
 
 import { signalCompassPositions } from "./signalCompassPositions";
 
 import { getSignalCompassState } from "./signalCompassState";
 
 export default function SignalCompass() {
-  //
-  // Selected (clicked)
-  //
+  const [selectedId, setSelectedId] =
+    useState<SignalCompassNodeId>("sports");
 
-  const [selectedId, setSelectedId] = useState("sports");
+  const [observedId, setObservedId] =
+    useState<SignalCompassNodeId | null>(null);
 
-  //
-  // Observed (hovered)
-  //
+  /*
+   * Geometry refs
+   */
 
-  const [observedId, setObservedId] = useState<string | null>(null);
+  const compassRef =
+    useRef<HTMLDivElement>(null);
 
-  //
-  // Selected Category
-  //
+  const coreRef =
+    useRef<HTMLDivElement>(null);
 
-  const selected = useMemo<SignalCompassCategory>(() => {
-    return (
-      signalCompassData.find(
-        (category) => category.id === selectedId
-      ) ?? signalCompassData[0]
-    );
-  }, [selectedId]);
+  const nodeRefs =
+    useRef<
+      Partial<
+        Record<
+          SignalCompassNodeId,
+          HTMLDivElement | null
+        >
+      >
+    >({});
 
-  //
-  // Observed Category
-  //
+  /*
+   * Ray follows committed selection only.
+   * Hover remains a lightweight preview.
+   */
 
-  const observed = useMemo<SignalCompassCategory | null>(() => {
-    if (!observedId) return null;
+  const activeTargetId =
+    selectedId;
 
-    return (
-      signalCompassData.find(
-        (category) => category.id === observedId
-      ) ?? null
-    );
-  }, [observedId]);
+  const getTargetElement =
+    useCallback(() => {
+      return (
+        nodeRefs.current[
+          activeTargetId
+        ] ?? null
+      );
+    }, [activeTargetId]);
 
-  //
-  // Interaction State
-  //
+  /*
+   * Selected category
+   */
 
-  const interactionState = getSignalCompassState({
-    observed: observedId !== null,
-    focused: selectedId !== null,
-  });
+  const selected =
+    useMemo<SignalCompassCategory>(() => {
+      return (
+        signalCompassData.find(
+          (category) =>
+            category.id === selectedId
+        ) ?? signalCompassData[0]
+      );
+    }, [selectedId]);
+
+  /*
+   * Hovered / observed category
+   */
+
+  const observed =
+    useMemo<
+      SignalCompassCategory | null
+    >(() => {
+      if (!observedId) {
+        return null;
+      }
+
+      return (
+        signalCompassData.find(
+          (category) =>
+            category.id === observedId
+        ) ?? null
+      );
+    }, [observedId]);
+
+  /*
+   * Core interaction state
+   */
+
+  const interactionState =
+    getSignalCompassState({
+      observed:
+        observedId !== null,
+
+      focused:
+        selectedId !== null,
+    });
 
   return (
-    <Card className="overflow-hidden p-10">
+    <Card className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
       {/* Header */}
 
-      <div className="mb-14 flex items-start justify-between">
-        <div className="max-w-3xl">
-          <p className="text-sm font-bold uppercase tracking-[0.28em] text-blue-600">
+      <div className="flex items-start justify-between gap-8">
+        <div className="max-w-[560px]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-blue-600">
             Signal Compass
           </p>
 
-          <h2 className="mt-3 text-5xl font-bold leading-tight tracking-tight text-slate-900">
+          <h2 className="mt-3 text-[32px] font-bold leading-[1.1] tracking-tight text-slate-950 lg:text-[36px]">
             Find where smart money
             <br />
             is building conviction.
           </h2>
 
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-            PolySignal continuously analyzes prediction markets
-            to surface where institutional-sized conviction is
-            forming before it becomes obvious.
+          <p className="mt-4 max-w-[520px] text-[15px] leading-7 text-slate-600">
+            PolySignal continuously analyzes prediction
+            markets to surface where institutional-sized
+            conviction is forming before it becomes obvious.
           </p>
         </div>
 
-        <div className="rounded-full bg-emerald-50 px-5 py-3">
-          <span className="text-sm font-semibold text-emerald-700">
+        <div className="shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2">
+          <span className="text-xs font-semibold text-emerald-700">
             ● Live Intelligence
           </span>
         </div>
       </div>
 
-      {/* Dashboard */}
+      {/* Intelligence Workspace */}
 
-      <div className="grid items-start gap-12 lg:grid-cols-[70%_30%]">
-        {/* Compass */}
+      <div className="mt-8 grid items-stretch gap-8 xl:grid-cols-[minmax(0,1fr)_420px]">
+        {/* Compass Field */}
 
-        <div className="relative flex min-h-[780px] items-center justify-center overflow-hidden rounded-[36px]">
-          {/* Network */}
+        <div
+          ref={compassRef}
+          className="relative flex min-h-[680px] items-center justify-center overflow-hidden rounded-[28px]"
+        >
+          {/* Intelligence Network */}
 
           <IntelligenceNetwork
-            selectedId={selected.id}
-            observedId={observedId}
-            className="pointer-events-none absolute inset-0 h-full w-full"
+            containerRef={compassRef}
+            coreRef={coreRef}
+            getTargetElement={
+              getTargetElement
+            }
+            targetId={
+              activeTargetId
+            }
+            observed={false}
+            className="pointer-events-none absolute inset-0 z-10"
           />
 
-          {/* Beacon */}
+          {/* Intelligence Core */}
 
           <IntelligenceCore
-            interactionState={interactionState}
+            ref={coreRef}
+            interactionState={
+              interactionState
+            }
             observedId={observedId}
+            className="relative z-20"
           />
 
-          {/* Nodes */}
+          {/* Category Nodes */}
 
-          {signalCompassData.map((category) => (
-            <div
-              key={category.id}
-              className="absolute"
-              style={signalCompassPositions[category.id]}
-            >
-              <CompassNode
-  name={category.name}
-  grade={category.grade}
-  signals={category.signals}
-  interactionState={getSignalCompassState({
-    observed: observedId === category.id,
-    focused: selected.id === category.id,
-  })}
-  onMouseEnter={() => setObservedId(category.id)}
-  onMouseLeave={() => setObservedId(null)}
-  onClick={() => setSelectedId(category.id)}
-/>
+          {signalCompassData.map(
+            (category) => {
+              const categoryId =
+                category.id as SignalCompassNodeId;
+
+              return (
+                <div
+                  key={category.id}
+                  className="absolute z-30"
+                  style={
+                    signalCompassPositions[
+                      categoryId
+                    ]
+                  }
+                >
+                  <CompassNode
+                    name={category.name}
+                    grade={category.grade}
+                    signals={
+                      category.signals
+                    }
+                    orbRef={(element) => {
+                      nodeRefs.current[
+                        categoryId
+                      ] = element;
+                    }}
+                    interactionState={getSignalCompassState(
+                      {
+                        observed:
+                          observedId ===
+                          categoryId,
+
+                        focused:
+                          selectedId ===
+                          categoryId,
+                      }
+                    )}
+                    onMouseEnter={() =>
+                      setObservedId(
+                        categoryId
+                      )
+                    }
+                    onMouseLeave={() =>
+                      setObservedId(null)
+                    }
+                    onClick={() =>
+                      setSelectedId(
+                        categoryId
+                      )
+                    }
+                  />
+                </div>
+              );
+            }
+          )}
+        </div>
+
+        {/* Intelligence Panel */}
+<aside className="relative min-h-[680px] pt-[112px]">
+
+          {/* Hover Preview
+              Absolute positioning prevents hover
+              from changing the workspace height. */}
+
+          <div className="absolute inset-x-0 top-0 z-20">
+            <PreviewBanner
+              observedName={
+                observed?.name
+              }
+            />
+          </div>
+
+          {/* Selected Intelligence */}
+
+          <div className="flex min-h-[568px] items-center">
+            <div className="w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selected.id}
+                  initial={{
+                    opacity: 0,
+                    y: 6,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -6,
+                  }}
+                  transition={{
+                    duration: 0.18,
+                    ease: "easeOut",
+                  }}
+                >
+                  <SelectedCategory
+                    name={selected.name}
+                    status={selected.status}
+                    summary={
+                      selected.summary
+                    }
+                    grade={selected.grade}
+                    strength={
+                      selected.strength
+                    }
+                    signals={
+                      selected.signals
+                    }
+                    capital={
+                      selected.capital
+                    }
+                    topOpportunity={
+                      selected.topOpportunity
+                    }
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
-          ))}
-        </div>
-
-        {/* Right Panel */}
-
-        <div className="flex flex-col">
-          <PreviewBanner
-            observedName={observed?.name}
-          />
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selected.id}
-              initial={{
-                opacity: 0,
-                x: 10,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              exit={{
-                opacity: 0,
-                x: -10,
-              }}
-              transition={{
-                duration: 0.2,
-              }}
-            >
-              <SelectedCategory
-                name={selected.name}
-                status={selected.status}
-                summary={selected.summary}
-                grade={selected.grade}
-                strength={selected.strength}
-                signals={selected.signals}
-                capital={selected.capital}
-                topOpportunity={selected.topOpportunity}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+          </div>
+        </aside>
       </div>
     </Card>
   );

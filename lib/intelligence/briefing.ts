@@ -3,34 +3,15 @@ export interface IntelligenceEvidence {
   value: string;
 }
 
+/** The briefing currently produced by the formatter and rendered by the Hero. */
 export interface IntelligenceBrief {
-  // Opportunity
-
+  masthead: string;
+  sectionTitle: string;
   title: string;
-
-  category: string;
-
-  matchup: string;
-
-  resolution: string;
-
-  // PolyScore
-
-  polyScore: string;
-
-  rating: string;
-
-  // Executive Conclusion
-
-  headline: string;
-
+  metadata: { label: string }[];
   summary: string;
-
-  // Conviction Explanation
-
   explanation: string;
-
-  // Dynamic Evidence
-
+  polyScore: string;
+  verdict: string;
   evidence: IntelligenceEvidence[];
 }

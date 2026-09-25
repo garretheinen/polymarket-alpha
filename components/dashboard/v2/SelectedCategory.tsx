@@ -14,6 +14,43 @@ interface SelectedCategoryProps {
   topOpportunity: string;
 }
 
+function getStatusClasses(status: string) {
+  const normalized = status.trim().toLowerCase();
+
+  if (
+    normalized.includes("high conviction") ||
+    normalized.includes("strong conviction")
+  ) {
+    return "border border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+
+  if (
+    normalized.includes("building momentum") ||
+    normalized.includes("emerging opportunity") ||
+    normalized.includes("developing")
+  ) {
+    return "border border-blue-200 bg-blue-50 text-blue-700";
+  }
+
+  if (
+    normalized.includes("low confidence") ||
+    normalized.includes("limited conviction") ||
+    normalized.includes("uncertain")
+  ) {
+    return "border border-amber-200 bg-amber-50 text-amber-700";
+  }
+
+  if (
+    normalized.includes("risk") ||
+    normalized.includes("opposing") ||
+    normalized.includes("critical")
+  ) {
+    return "border border-red-200 bg-red-50 text-red-700";
+  }
+
+  return "border border-slate-200 bg-slate-50 text-slate-600";
+}
+
 export default function SelectedCategory({
   name,
   status,
@@ -24,31 +61,31 @@ export default function SelectedCategory({
   capital,
   topOpportunity,
 }: SelectedCategoryProps) {
+  const statusClasses = getStatusClasses(status);
+
   return (
     <Card className="flex h-full flex-col p-8">
-
       {/* Category */}
 
       <div>
-
         <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-600">
           {name}
         </p>
 
-        <p className="mt-3 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+        <p
+          className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusClasses}`}
+        >
           {status}
         </p>
 
         <p className="mt-5 text-base leading-7 text-slate-600">
           {summary}
         </p>
-
       </div>
 
       {/* Metrics */}
 
       <div className="my-8 space-y-5 border-y border-slate-200 py-6">
-
         <Metric
           label="PolyScore™"
           value={grade}
@@ -68,13 +105,11 @@ export default function SelectedCategory({
           label="Active Signals"
           value={signals.toString()}
         />
-
       </div>
 
       {/* Top Opportunity */}
 
       <div>
-
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           Top Opportunity
         </p>
@@ -82,19 +117,15 @@ export default function SelectedCategory({
         <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
           {topOpportunity}
         </h3>
-
       </div>
 
       {/* CTA */}
 
       <div className="mt-auto pt-8">
-
         <Button className="w-full">
           View {name}
         </Button>
-
       </div>
-
     </Card>
   );
 }
@@ -110,7 +141,6 @@ function Metric({
 }: MetricProps) {
   return (
     <div className="flex items-center justify-between">
-
       <span className="text-sm text-slate-500">
         {label}
       </span>
@@ -118,7 +148,6 @@ function Metric({
       <span className="text-lg font-semibold text-slate-900">
         {value}
       </span>
-
     </div>
   );
 }

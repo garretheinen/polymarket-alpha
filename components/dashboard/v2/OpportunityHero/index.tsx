@@ -2,18 +2,20 @@
 
 import Card from "@/components/ui/Card";
 
-import type { Opportunity } from "@/lib/domain/opportunity";
+import type { DashboardFeaturedOpportunity } from "@/types/dashboard";
 import { createIntelligenceBrief } from "@/lib/intelligence/formatter";
 
 import IntelligenceSummary from "./IntelligenceSummary";
 
 interface OpportunityHeroProps {
-  opportunity: Opportunity;
+  opportunity: DashboardFeaturedOpportunity | null;
 }
 
 export default function OpportunityHero({
   opportunity,
 }: OpportunityHeroProps) {
+  if (!opportunity) return null;
+
   const briefing = createIntelligenceBrief(opportunity);
 
   return (

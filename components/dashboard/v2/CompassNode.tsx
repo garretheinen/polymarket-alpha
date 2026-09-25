@@ -1,9 +1,13 @@
 "use client";
 
-import { forwardRef } from "react";
+import {
+  forwardRef,
+  type Ref,
+} from "react";
+
 import clsx from "clsx";
 
-import { SignalCompassState } from "./signalCompassState";
+import type { SignalCompassState } from "./signalCompassState";
 
 interface CompassNodeProps {
   name: string;
@@ -14,22 +18,25 @@ interface CompassNodeProps {
 
   className?: string;
 
+  orbRef?: Ref<HTMLDivElement>;
+
   onClick?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
 
-const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
+const CompassNode = forwardRef<
+  HTMLButtonElement,
+  CompassNodeProps
+>(
   (
     {
       name,
       grade,
       signals,
-
       interactionState,
-
       className,
-
+      orbRef,
       onClick,
       onMouseEnter,
       onMouseLeave,
@@ -56,60 +63,61 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         className={clsx(
-          "group flex w-36 flex-col items-center rounded-3xl p-3 transition-all duration-300 ease-out cursor-pointer",
+          "group flex w-36 cursor-pointer flex-col items-center rounded-3xl p-3 transition-all duration-200 ease-out",
           className
         )}
       >
         {/* Orb */}
 
         <div
+          ref={orbRef}
           className={clsx(
-            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white transition-all duration-300 ease-out",
+            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white transition-all duration-200 ease-out",
 
             focused
-              ? "scale-105 border-blue-500 shadow-lg ring-2 ring-blue-200 ring-offset-4 ring-offset-white"
+              ? "scale-[1.04] border-blue-500 shadow-[0_8px_20px_rgba(37,99,235,.10)] ring-1 ring-blue-300 ring-offset-4 ring-offset-white"
               : observed
-              ? "scale-[1.02] border-blue-300 shadow-md"
-              : updated
-              ? "border-blue-200 shadow-md"
-              : critical
-              ? "border-blue-500 shadow-lg"
-              : "border-slate-200 shadow-sm"
+                ? "scale-[1.015] border-blue-300 shadow-sm"
+                : updated
+                  ? "border-blue-200 shadow-sm"
+                  : critical
+                    ? "border-blue-400 shadow-sm"
+                    : "border-slate-200/80 shadow-[0_3px_10px_rgba(15,23,42,.04)]"
           )}
         >
           {/* Focus Glow */}
 
           {focused && (
-            <div className="absolute inset-0 scale-125 rounded-full bg-blue-500/5 blur-2xl" />
+            <div className="absolute inset-0 scale-[1.18] rounded-full bg-blue-500/[0.035] blur-xl" />
           )}
 
-          {/* Reserved for Updated Resonance */}
+          {/* Updated Resonance */}
 
           {updated && (
-            <div className="absolute inset-0 rounded-full border border-blue-300/40" />
+            <div className="absolute inset-0 rounded-full border border-blue-300/30" />
           )}
 
-          {/* Reserved for Critical */}
+          {/* Critical */}
 
           {critical && (
-            <div className="absolute inset-0 rounded-full bg-blue-500/5 blur-xl" />
+            <div className="absolute inset-0 rounded-full bg-blue-500/[0.03] blur-lg" />
           )}
 
           {/* Grade */}
 
           <span
             className={clsx(
-              "relative text-xl font-black tracking-tight transition-all duration-300",
+              "relative text-xl font-extrabold tracking-tight transition-colors duration-200",
 
               focused
                 ? "text-emerald-500"
                 : observed
-                ? "text-emerald-500"
-                : updated
-                ? "text-emerald-500"
-                : critical
-                ? "text-emerald-400"
-                : "text-emerald-600"
+                  ? "text-emerald-500"
+                  : updated
+                    ? "text-emerald-500"
+                    : critical
+                      ? "text-emerald-500"
+                      : "text-emerald-600"
             )}
           >
             {grade}
@@ -120,13 +128,11 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
 
         <h3
           className={clsx(
-            "mt-4 text-sm font-semibold tracking-tight transition-colors duration-300",
+            "mt-3 text-sm font-semibold tracking-tight transition-colors duration-200",
 
-            focused || observed
+            focused || observed || updated
               ? "text-slate-950"
-              : updated
-              ? "text-slate-950"
-              : "text-slate-900"
+              : "text-slate-800"
           )}
         >
           {name}
@@ -136,13 +142,11 @@ const CompassNode = forwardRef<HTMLButtonElement, CompassNodeProps>(
 
         <p
           className={clsx(
-            "mt-1 text-xs font-medium transition-colors duration-300",
+            "mt-0.5 text-xs font-medium transition-colors duration-200",
 
-            focused || observed
-              ? "text-slate-600"
-              : updated
-              ? "text-slate-600"
-              : "text-slate-500"
+            focused || observed || updated
+              ? "text-slate-500"
+              : "text-slate-400"
           )}
         >
           {signals} Signals

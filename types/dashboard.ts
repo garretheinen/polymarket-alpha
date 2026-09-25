@@ -1,3 +1,16 @@
+import type { Conviction } from "@/lib/domain/conviction";
+
+/** Featured payload returned by /api/dashboard, distinct from consensus rows. */
+export interface DashboardFeaturedOpportunity {
+  title: string;
+  category: string;
+  intelligence: { narrative: string };
+  conviction: Pick<
+    Conviction,
+    "polyScore" | "consensus" | "trackedCapital" | "supportingSignals"
+  >;
+}
+
 export interface DashboardStats {
   walletsTracked: number;
   totalPositions: number;
@@ -37,7 +50,7 @@ export interface DashboardWallet {
 
 export interface DashboardResponse {
   stats: DashboardStats;
-  featured: FeaturedOpportunity | null;
+  featured: DashboardFeaturedOpportunity | null;
   consensus: FeaturedOpportunity[];
   alerts: DashboardAlert[];
   topWallets: DashboardWallet[];
