@@ -72,17 +72,17 @@ const CompassNode = forwardRef<
         <div
           ref={orbRef}
           className={clsx(
-            "relative flex h-18 w-18 items-center justify-center rounded-full border bg-white transition-all duration-200 ease-out",
+            "relative flex h-18 w-18 items-center justify-center rounded-full border transition-all duration-200 ease-out",
 
             focused
-              ? "scale-[1.04] border-blue-500 shadow-[0_8px_20px_rgba(37,99,235,.10)] ring-1 ring-blue-300 ring-offset-4 ring-offset-white"
+              ? "scale-[1.04] border-blue-500 bg-blue-50/70 shadow-[0_0_18px_rgba(37,99,235,.10)]"
               : observed
-                ? "scale-[1.015] border-blue-300 shadow-sm"
+                ? "scale-[1.015] border-blue-300 bg-white shadow-sm"
                 : updated
-                  ? "border-blue-200 shadow-sm"
+                  ? "border-blue-200 bg-white shadow-sm"
                   : critical
-                    ? "border-blue-400 shadow-sm"
-                    : "border-slate-200/80 shadow-[0_3px_10px_rgba(15,23,42,.04)]"
+                    ? "border-blue-400 bg-white shadow-sm"
+                    : "bg-white border-slate-200/80 shadow-[0_3px_10px_rgba(15,23,42,.04)]"
           )}
         >
           {/* Focus Glow */}

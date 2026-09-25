@@ -340,8 +340,9 @@ export default function IntelligenceNetwork({
           {/* Atmospheric trail */}
 
           <div
-            className="absolute h-[7px] rounded-full bg-blue-300/20 blur-[4px]"
+            className="absolute h-[4px] rounded-full blur-[3px]"
             style={{
+              background: "linear-gradient(90deg, rgba(59,130,246,.12), rgba(147,197,253,0))",
               left:
                 geometry.start.x,
 
@@ -364,7 +365,7 @@ export default function IntelligenceNetwork({
           {/* Intelligence ray */}
 
           <div
-            className="absolute h-[3px] rounded-full"
+            className="absolute h-[2px] rounded-full"
             style={{
               left:
                 geometry.start.x,
@@ -385,13 +386,13 @@ export default function IntelligenceNetwork({
 
               background:
                 observed
-                  ? "linear-gradient(90deg, rgba(37,99,235,.92) 0%, rgba(59,130,246,.72) 42%, rgba(147,197,253,.38) 100%)"
-                  : "linear-gradient(90deg, rgba(37,99,235,.78) 0%, rgba(59,130,246,.56) 42%, rgba(147,197,253,.28) 100%)",
+                  ? "linear-gradient(90deg, rgba(37,99,235,.80) 0%, rgba(59,130,246,.48) 45%, rgba(147,197,253,.10) 100%)"
+                  : "linear-gradient(90deg, rgba(37,99,235,.70) 0%, rgba(59,130,246,.38) 45%, rgba(147,197,253,.08) 100%)",
 
               boxShadow:
                 observed
-                  ? "0 0 12px rgba(59,130,246,.24)"
-                  : "0 0 8px rgba(59,130,246,.16)",
+                  ? "0 0 6px rgba(59,130,246,.12)"
+                  : "0 0 5px rgba(59,130,246,.08)",
 
               transition:
                 "opacity 180ms ease",

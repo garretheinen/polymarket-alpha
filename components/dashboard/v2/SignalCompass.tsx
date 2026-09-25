@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import {
-  AnimatePresence,
   motion,
 } from "framer-motion";
 
@@ -27,7 +26,7 @@ import {
 
 import type { SignalCompassNodeId } from "./signalCompassLayout";
 
-import { signalCompassPositions } from "./signalCompassPositions";
+import { signalCompassOrbit, signalCompassPositions } from "./signalCompassPositions";
 
 import { getSignalCompassState } from "./signalCompassState";
 
@@ -74,20 +73,6 @@ export default function SignalCompass() {
         ] ?? null
       );
     }, [activeTargetId]);
-
-  /*
-   * Selected category
-   */
-
-  const selected =
-    useMemo<SignalCompassCategory>(() => {
-      return (
-        signalCompassData.find(
-          (category) =>
-            category.id === selectedId
-        ) ?? signalCompassData[0]
-      );
-    }, [selectedId]);
 
   /*
    * Hovered / observed category
@@ -161,6 +146,36 @@ export default function SignalCompass() {
           ref={compassRef}
           className="relative flex min-h-[680px] items-center justify-center overflow-hidden rounded-[28px]"
         >
+          {/* Static orbital guides share the nodes' center and outer radius. */}
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+            fill="none"
+          >
+            <ellipse
+              cx="50%"
+              cy="50%"
+              rx="23%"
+              ry="23%"
+              stroke="rgba(100, 116, 139, 0.08)"
+              strokeWidth="1"
+            />
+            <ellipse
+              cx="50%"
+              cy="50%"
+              style={{
+                rx: `calc(50% - ${signalCompassOrbit.horizontalInsetRem}rem)`,
+                ry: `calc(50% - ${signalCompassOrbit.verticalInsetRem}rem)`,
+              }}
+              stroke="rgba(100, 116, 139, 0.10)"
+              strokeWidth="1"
+              strokeDasharray="180 48"
+              strokeDashoffset="24"
+              strokeLinecap="round"
+            />
+          </svg>
+
           {/* Intelligence Network */}
 
           <IntelligenceNetwork
@@ -264,49 +279,36 @@ export default function SignalCompass() {
           {/* Selected Intelligence */}
 
           <div className="flex min-h-[568px] items-center">
-            <div className="w-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selected.id}
-                  initial={{
-                    opacity: 0,
-                    y: 6,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: -6,
-                  }}
-                  transition={{
-                    duration: 0.18,
-                    ease: "easeOut",
-                  }}
-                >
-                  <SelectedCategory
-                    name={selected.name}
-                    status={selected.status}
-                    summary={
-                      selected.summary
-                    }
-                    grade={selected.grade}
-                    strength={
-                      selected.strength
-                    }
-                    signals={
-                      selected.signals
-                    }
-                    capital={
-                      selected.capital
-                    }
-                    topOpportunity={
-                      selected.topOpportunity
-                    }
-                  />
-                </motion.div>
-              </AnimatePresence>
+            {/* All categories share one grid cell, reserving the tallest card's
+                natural height at this width, including during transitions. */}
+            <div className="grid w-full">
+              {signalCompassData.map((category) => {
+                const active = category.id === selectedId;
+
+                return (
+                  <motion.div
+                    key={category.id}
+                    className="col-start-1 row-start-1 min-w-0"
+                    style={{ visibility: active ? "visible" : "hidden" }}
+                    aria-hidden={!active}
+                    inert={!active}
+                    initial={false}
+                    animate={{ opacity: active ? 1 : 0, y: active ? 0 : 6 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                  >
+                    <SelectedCategory
+                      name={category.name}
+                      status={category.status}
+                      summary={category.summary}
+                      grade={category.grade}
+                      strength={category.strength}
+                      signals={category.signals}
+                      capital={category.capital}
+                      topOpportunity={category.topOpportunity}
+                    />
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </aside>
